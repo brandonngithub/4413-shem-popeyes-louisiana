@@ -1,29 +1,52 @@
-CREATE TYPE user_role AS ENUM ('admin', 'customer');
+DROP TABLE IF EXISTS order_items CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS products CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
+DROP TYPE IF EXISTS user_role CASCADE;
+DROP TYPE IF EXISTS product_category CASCADE;
+DROP TYPE IF EXISTS order_status CASCADE;
+
+CREATE TYPE user_role AS ENUM ('CUSTOMER', 'ADMIN');
+CREATE TYPE product_category AS ENUM ('BOOK', 'COMPUTER');
+CREATE TYPE order_status AS ENUM ('PLACED', 'SHIPPED', 'DELIVERED', 'CANCELLED');
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	role user_role DEFAULT 'customer'
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    role user_role NOT NULL DEFAULT "CUSTOMER",
+
+    shipping_street TEXT,
+    shipping_province VARCHAR(50),
+    shipping_country VARCHAR(50),
+    shipping_zip VARCHAR(20),
+
+    card_last4 VARCHAR(4),
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
+    category product_category,
+    brand VARCHAR(100),
+    model VARCHAR(100),
     price NUMERIC(10, 2) NOT NULL,
     stock INTEGER DEFAULT 0,
-	category VARCHAR(255) NOT NULL,
+    image TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    status VARCHAR(50) DEFAULT 'pending',
     total_price NUMERIC(10, 2) NOT NULL,
+    status order_status DEFAULT 'PLACED',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

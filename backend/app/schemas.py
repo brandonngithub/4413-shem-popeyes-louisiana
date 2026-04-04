@@ -5,7 +5,7 @@ from app.models import OrderStatus, ProductCategory, UserRole
 
 class LoginRequest(BaseModel):
     email: str
-    password_hash: str
+    password: str
 
 class UserBase(BaseModel):
     email: str
@@ -19,7 +19,7 @@ class UserBase(BaseModel):
     card_last4: Optional[str] = ""
 
 class UserCreate(UserBase):
-    password_hash: str
+    password: str
 
 class UserPatch(BaseModel):
     first_name: Optional[str] = None

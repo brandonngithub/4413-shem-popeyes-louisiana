@@ -5,6 +5,7 @@ from typing import List, Tuple
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session, joinedload
+import bcrypt
 
 from app import models, schemas
 from app.database import Base, engine, get_db
@@ -30,31 +31,26 @@ def _payment_ok() -> bool:
     _checkout_attempts += 1
     return _checkout_attempts % 3 != 0
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 @app.get("/")
 def read_root():
     return {"message": "Welcome to E-Commerce API"}
 
 
-# @app.post("/auth/login", response_model=schemas.User)
-# def login(body: schemas.LoginRequest, db: Session = Depends(get_db)):
-#     u = db.query(models.User).filter(models.User.email == body.email).first()
-#     if not u or u.password != body.password:
-#         raise HTTPException(status_code=401, detail="Invalid email or password.")
-#     return u
+@app.post("/auth/login", response_model=schemas.User)
+def login(body: schemas.LoginRequest, db: Session = Depends(get_db)):
+    u = db.query(models.User).filter(models.User.email == body.email).first()
+    if not u or not bcrypt.checkpw(body.password.encode('utf-8'), u.password_hash.encode('utf-8')):
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+    return u
 
 @app.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.email).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
-    db_user = models.User(**user.model_dump())
+    user_data = user.model_dump(exclude={'password'})
+    user_data['password_hash'] = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    db_user = models.User(**user_data)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
