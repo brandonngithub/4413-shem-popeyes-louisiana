@@ -7,7 +7,7 @@ export default function Admin() {
         <h1 className="text-2xl font-semibold text-neutral-100">Admin</h1>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Link
           to="/admin/users"
           className="group block rounded-3xl border border-neutral-800 bg-neutral-900 p-6 transition hover:border-amber-400 hover:bg-neutral-950"
@@ -31,6 +31,19 @@ export default function Admin() {
           </p>
           <span className="mt-6 inline-flex items-center text-amber-400 transition group-hover:text-amber-300">
             Open orders page
+          </span>
+        </Link>
+
+        <Link
+          to="/admin/inventory"
+          className="group block rounded-3xl border border-neutral-800 bg-neutral-900 p-6 transition hover:border-amber-400 hover:bg-neutral-950"
+        >
+          <h2 className="text-lg font-semibold text-neutral-100">Inventory</h2>
+          <p className="mt-3 text-sm text-neutral-400">
+            Update stock levels for existing products.
+          </p>
+          <span className="mt-6 inline-flex items-center text-amber-400 transition group-hover:text-amber-300">
+            Open inventory page
           </span>
         </Link>
 

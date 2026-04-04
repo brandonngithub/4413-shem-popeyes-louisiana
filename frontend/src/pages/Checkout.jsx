@@ -96,7 +96,7 @@ export default function Checkout() {
         >
           {msg.ok ? (
             <>
-              Order {msg.orderId} placed. Total ${msg.total}. Cart cleared.{" "}
+              Order {msg.orderId} placed. Total ${msg.total_price}. Cart cleared.{" "}
               <Link to="/account" className="underline">
                 View account
               </Link>
