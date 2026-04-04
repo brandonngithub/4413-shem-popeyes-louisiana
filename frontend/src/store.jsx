@@ -304,6 +304,16 @@ export function StoreProvider({ children }) {
           if (me) setUser(mapUser(me))
         }
       },
+
+      adminDeleteUser: async (id) => {
+        await api.delete(`/users/${id}`)
+        const { data } = await api.get("/users/")
+        setUsers(data.map(mapUser))
+        if (user?.id === id) {
+          setUser(null)
+          localStorage.removeItem("user")
+        }
+      },
     }
   }, [products, users, orders, cart, user, setCart, refreshOrders])
 

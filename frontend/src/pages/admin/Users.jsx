@@ -3,9 +3,10 @@ import { Link } from "react-router-dom"
 import { useStore } from "../../store.jsx"
 
 export default function Users() {
-  const { users, adminUpdateUser } = useStore()
+  const { users, adminUpdateUser, adminDeleteUser } = useStore()
   const [drafts, setDrafts] = useState({})
   const [savedId, setSavedId] = useState(null)
+  const [deletingId, setDeletingId] = useState(null)
 
   const draftFor = (u) =>
     drafts[u.id] ?? {
@@ -26,7 +27,8 @@ export default function Users() {
         firstName: prev[id]?.firstName ?? u.firstName ?? "",
         lastName: prev[id]?.lastName ?? u.lastName ?? "",
         shippingStreet: prev[id]?.shippingStreet ?? u.shippingStreet ?? "",
-        shippingProvince: prev[id]?.shippingProvince ?? u.shippingProvince ?? "",
+        shippingProvince:
+          prev[id]?.shippingProvince ?? u.shippingProvince ?? "",
         shippingCountry: prev[id]?.shippingCountry ?? u.shippingCountry ?? "",
         shippingZip: prev[id]?.shippingZip ?? u.shippingZip ?? "",
         cardLast4: prev[id]?.cardLast4 ?? u.cardLast4 ?? "",
@@ -41,6 +43,19 @@ export default function Users() {
     await adminUpdateUser(id, d)
     setSavedId(id)
     setTimeout(() => setSavedId(null), 1500)
+  }
+
+  const deleteUser = async (id) => {
+    if (!confirm("Are you sure you want to delete this user?")) return
+    setDeletingId(id)
+    try {
+      await adminDeleteUser(id)
+      // The store should automatically update the users list
+    } catch (error) {
+      alert("Failed to delete user: " + error.message)
+    } finally {
+      setDeletingId(null)
+    }
   }
 
   return (
@@ -129,13 +144,21 @@ export default function Users() {
                       placeholder="Card last 4"
                       className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-neutral-100"
                     />
-                    <div className="sm:col-span-2">
+                    <div className="sm:col-span-2 flex gap-2">
                       <button
                         type="button"
                         onClick={() => save(user.id)}
                         className="rounded bg-amber-500 px-3 py-1.5 text-sm font-medium text-neutral-950 hover:bg-amber-400"
                       >
                         Save user changes
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => deleteUser(user.id)}
+                        disabled={deletingId === user.id}
+                        className="rounded bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-500 disabled:opacity-50"
+                      >
+                        {deletingId === user.id ? "Deleting..." : "Delete user"}
                       </button>
                       {savedId === user.id && (
                         <span className="ml-3 text-emerald-400">Saved.</span>
