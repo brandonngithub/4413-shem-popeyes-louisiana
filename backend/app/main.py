@@ -8,14 +8,33 @@ from sqlalchemy.orm import Session, joinedload
 import bcrypt
 
 from app import models, schemas
+from app.config import settings
 from app.database import Base, engine, get_db
 from app.seed import seed_if_empty
+
+
+def _cors_allow_origins() -> List[str]:
+    local = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    extra = [
+        o.strip().rstrip("/")
+        for o in settings.CORS_ORIGIN.split(",")
+        if o.strip()
+    ]
+    # Preserve order, drop duplicates
+    seen: set[str] = set()
+    out: List[str] = []
+    for o in local + extra:
+        if o not in seen:
+            seen.add(o)
+            out.append(o)
+    return out
+
 
 app = FastAPI(title="E-Commerce API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=_cors_allow_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
