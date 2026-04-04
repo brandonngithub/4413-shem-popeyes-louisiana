@@ -20,7 +20,7 @@ class ProductCategory(enum.Enum):
     ACCESSORIES = "accessory"
     CLOTHING = "clothing"
     BEVERAGE = "beverage"
-    BOOK = "BOOK"
+    BOOK = "book"
     OTHER = "other"
 
 class User(Base):
