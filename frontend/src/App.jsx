@@ -1,16 +1,19 @@
-import { Link, Outlet, Route, Routes } from "react-router-dom";
-import { useStore } from "./store.jsx";
-import Account from "./pages/Account.jsx";
-import Admin from "./pages/Admin.jsx";
-import Catalog from "./pages/Catalog.jsx";
-import Cart from "./pages/Cart.jsx";
-import Checkout from "./pages/Checkout.jsx";
-import ProductDetail from "./pages/ProductDetail.jsx";
-import { Login, Register } from "./pages/Auth.jsx";
+import { Link, Outlet, Route, Routes } from "react-router-dom"
+import { useStore } from "./store.jsx"
+import Account from "./pages/Account.jsx"
+import Admin from "./pages/admin/Admin.jsx"
+import Users from "./pages/admin/Users.jsx"
+import Orders from "./pages/admin/Orders.jsx"
+import CreateProduct from "./pages/admin/CreateProduct.jsx"
+import Catalog from "./pages/Catalog.jsx"
+import Cart from "./pages/Cart.jsx"
+import Checkout from "./pages/Checkout.jsx"
+import ProductDetail from "./pages/ProductDetail.jsx"
+import { Login, Register } from "./pages/Auth.jsx"
 
 function Layout() {
-  const { user, cart, logout } = useStore();
-  const count = cart.reduce((s, l) => s + l.qty, 0);
+  const { user, cart, logout } = useStore()
+  const count = cart.reduce((s, l) => s + l.qty, 0)
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-200">
@@ -59,7 +62,7 @@ function Layout() {
         <Outlet />
       </main>
     </div>
-  );
+  )
 }
 
 export default function App() {
@@ -74,7 +77,10 @@ export default function App() {
         <Route path="register" element={<Register />} />
         <Route path="account" element={<Account />} />
         <Route path="admin" element={<Admin />} />
+        <Route path="admin/users" element={<Users />} />
+        <Route path="admin/orders" element={<Orders />} />
+        <Route path="admin/create-product" element={<CreateProduct />} />
       </Route>
     </Routes>
-  );
+  )
 }
