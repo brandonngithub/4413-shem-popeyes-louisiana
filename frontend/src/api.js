@@ -1,0 +1,101 @@
+const base = () => import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000";
+
+async function req(method, path, body) {
+  const res = await fetch(`${base()}${path}`, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: body != null ? JSON.stringify(body) : undefined,
+  });
+  let data = {};
+  const text = await res.text();
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = {};
+    }
+  }
+  if (!res.ok) {
+    const err = new Error(typeof data.detail === "string" ? data.detail : "Request failed");
+    err.response = { data };
+    throw err;
+  }
+  return { data };
+}
+
+export const api = {
+  get: (path) => req("GET", path),
+  post: (path, body) => req("POST", path, body),
+  patch: (path, body) => req("PATCH", path, body),
+  put: (path, body) => req("PUT", path, body),
+};
+
+export function mapUser(u) {
+  if (!u) return null;
+  const role = typeof u.role === "string" ? u.role : u.role?.value ?? u.role;
+  return {
+    id: u.id,
+    email: u.email,
+    firstName: u.first_name,
+    lastName: u.last_name,
+    role,
+    shippingStreet: u.shipping_street ?? "",
+    shippingProvince: u.shipping_province ?? "",
+    shippingCountry: u.shipping_country ?? "",
+    shippingZip: u.shipping_zip ?? "",
+    cardLast4: u.card_last4 ?? "",
+  };
+}
+
+export function mapProduct(p) {
+  const cat =
+    typeof p.category === "string" ? p.category : p.category?.value ?? "other";
+  return {
+    id: p.id,
+    name: p.name,
+    description: p.description ?? "",
+    category: cat,
+    brand: p.brand ?? "",
+    model: p.model ?? "",
+    price: p.price,
+    quantity: p.stock,
+    image: p.image || "https://picsum.photos/seed/none/320/320",
+  };
+}
+
+export function productToApi(p) {
+  return {
+    name: p.name,
+    description: p.description,
+    price: p.price,
+    category: p.category,
+    brand: p.brand,
+    model: p.model,
+    image: p.image,
+    stock: p.quantity,
+  };
+}
+
+export function mapOrder(o) {
+  const raw = o.created_at;
+  const date = typeof raw === "string" ? raw.slice(0, 10) : "";
+  return {
+    id: o.id,
+    userId: o.user_id,
+    date,
+    total: o.total,
+    lines: (o.items ?? []).map((i) => ({
+      itemId: String(i.product_id),
+      name: "",
+      qty: i.quantity,
+      unitPrice: i.price,
+    })),
+  };
+}
+
+export function errMsg(e, fallback) {
+  const d = e.response?.data?.detail;
+  if (typeof d === "string") return d;
+  if (Array.isArray(d) && d[0]?.msg) return d[0].msg;
+  return e.message || fallback;
+}
