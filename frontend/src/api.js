@@ -87,7 +87,7 @@ export function mapOrder(o) {
     id: o.id,
     userId: o.user_id,
     date,
-    total: o.total_price ?? o.total,
+    total_price: o.total_price,
     lines: (o.items ?? []).map((i) => ({
       itemId: String(i.product_id),
       name: "",
