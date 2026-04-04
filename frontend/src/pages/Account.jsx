@@ -3,11 +3,6 @@ import { Link, Navigate } from "react-router-dom"
 import { useStore } from "../store.jsx"
 
 export default function Account() {
-  useEffect(() => {
-    setFirstName(user?.firstName ?? "")
-    setLastName(user?.lastName ?? "")
-  }, [user?.id, user?.firstName, user?.lastName])
-  
   const { user, orders, products, logout, updateProfile } = useStore();
   const mine = orders.filter((o) => o.userId === user?.id);
   const [firstName, setFirstName] = useState(user?.firstName ?? "");
