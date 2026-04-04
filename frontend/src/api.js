@@ -1,9 +1,13 @@
 const base = () => import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000";
 
 async function req(method, path, body) {
+  const headers = {};
+  if (body != null) {
+    headers["Content-Type"] = "application/json";
+  }
   const res = await fetch(`${base()}${path}`, {
     method,
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: body != null ? JSON.stringify(body) : undefined,
   });
   let data = {};

@@ -32,16 +32,19 @@ def _cors_allow_origins() -> List[str]:
 
 app = FastAPI(title="E-Commerce API")
 
+_cors_regex = (settings.CORS_ORIGIN_REGEX or "").strip() or None
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_allow_origins(),
+    allow_origin_regex=_cors_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Base.metadata.create_all(bind=engine)
-# seed_if_empty()
+Base.metadata.create_all(bind=engine)
+seed_if_empty()
 
 _checkout_attempts = 0
 
