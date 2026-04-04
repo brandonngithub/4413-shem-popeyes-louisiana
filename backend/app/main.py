@@ -32,7 +32,17 @@ def _cors_allow_origins() -> List[str]:
 
 app = FastAPI(title="E-Commerce API")
 
-_cors_regex = (settings.CORS_ORIGIN_REGEX or "").strip() or None
+
+def _cors_origin_regex() -> str | None:
+    explicit = (settings.CORS_ORIGIN_REGEX or "").strip()
+    if explicit:
+        return explicit
+    if settings.CORS_ALLOW_VERCEL_REGEX:
+        return r"https://.*\.vercel\.app$"
+    return None
+
+
+_cors_regex = _cors_origin_regex()
 
 app.add_middleware(
     CORSMiddleware,

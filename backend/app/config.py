@@ -8,8 +8,10 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql://postgres:root@localhost:5432/ecoms"
     # Comma-separated browser origins (no trailing slash).
     CORS_ORIGIN: str = ""
-    # Optional regex, e.g. https://.*\.vercel\.app — use when preview URLs change often.
+    # If set, used as the only CORS origin regex (Starlette fullmatch on Origin).
     CORS_ORIGIN_REGEX: str = ""
+    # When True and CORS_ORIGIN_REGEX is empty, allow any https://*.vercel.app (prod + previews).
+    CORS_ALLOW_VERCEL_REGEX: bool = True
 
 
 settings = Settings()

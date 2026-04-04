@@ -1,7 +1,13 @@
 """Demo rows when the DB is empty (replace with real data via admin/API later)."""
 
+import bcrypt
+
 from app import models
 from app.database import SessionLocal
+
+
+def _hash_password(plain: str) -> str:
+    return bcrypt.hashpw(plain.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
 def seed_if_empty() -> None:
@@ -10,9 +16,10 @@ def seed_if_empty() -> None:
         if db.query(models.User).first() is not None:
             return
 
+        demo_hash = _hash_password("demo")
         customer = models.User(
             email="customer@demo.com",
-            password="demo",
+            password_hash=demo_hash,
             first_name="Alex",
             last_name="Buyer",
             role=models.UserRole.CUSTOMER,
@@ -24,7 +31,7 @@ def seed_if_empty() -> None:
         )
         admin = models.User(
             email="admin@demo.com",
-            password="demo",
+            password_hash=demo_hash,
             first_name="Store",
             last_name="Admin",
             role=models.UserRole.ADMIN,
@@ -50,7 +57,7 @@ def seed_if_empty() -> None:
         p_ipad = models.Product(
             name="iPad",
             description="Tablet for browsing, reading, and light work.",
-            category=models.ProductCategory.COMPUTER,
+            category=models.ProductCategory.ELECTRONIC,
             brand="Apple",
             model="Air",
             price=500,
@@ -60,7 +67,7 @@ def seed_if_empty() -> None:
         p_laptop = models.Product(
             name="Laptop 15",
             description="15-inch laptop for everyday use.",
-            category=models.ProductCategory.COMPUTER,
+            category=models.ProductCategory.ELECTRONIC,
             brand="Dell",
             model="Inspiron",
             price=1500,
@@ -71,7 +78,9 @@ def seed_if_empty() -> None:
         db.flush()
 
         order = models.Order(
-            user_id=customer.id, total=20, status=models.OrderStatus.PLACED
+            user_id=customer.id,
+            total_price=20,
+            status=models.OrderStatus.PLACED,
         )
         db.add(order)
         db.flush()
@@ -80,7 +89,7 @@ def seed_if_empty() -> None:
                 order_id=order.id,
                 product_id=p_book.id,
                 quantity=1,
-                price=20,
+                price_at_purchase=20,
             )
         )
         p_book.stock -= 1
