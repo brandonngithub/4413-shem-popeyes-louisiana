@@ -46,17 +46,18 @@ app.add_middleware(
 Base.metadata.create_all(bind=engine)
 seed_if_empty()
 
-_checkout_attempts = 0
+_checkout_attempts = {}
 
-def _payment_ok() -> bool:
+def _payment_ok(user) -> bool:
     global _checkout_attempts
-    _checkout_attempts += 1
-    return _checkout_attempts % 3 != 0
+    if user not in _checkout_attempts:
+        _checkout_attempts[user] = 0
+    _checkout_attempts[user] += 1
+    return _checkout_attempts[user] % 3 != 0
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to E-Commerce API"}
-
+    return {"message": "Healthy"}
 
 @app.post("/auth/login", response_model=schemas.User)
 def login(body: schemas.LoginRequest, db: Session = Depends(get_db)):
@@ -197,7 +198,7 @@ def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
         total += line_price * item.quantity
         lines.append((p, item.quantity, line_price))
 
-    if not _payment_ok():
+    if not _payment_ok(order.user_id):
         raise HTTPException(
             status_code=402, detail="Credit Card Authorization Failed."
         )
@@ -248,7 +249,6 @@ def read_order(order_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Order not found")
     return db_order
 
-
 @app.get("/users/{user_id}/orders", response_model=List[schemas.Order])
 def read_user_orders(user_id: int, db: Session = Depends(get_db)):
     return (
@@ -257,7 +257,6 @@ def read_user_orders(user_id: int, db: Session = Depends(get_db)):
         .filter(models.Order.user_id == user_id)
         .all()
     )
-
 
 @app.put("/orders/{order_id}", response_model=schemas.Order)
 def update_order(order_id: int, order: schemas.OrderBase, db: Session = Depends(get_db)):
