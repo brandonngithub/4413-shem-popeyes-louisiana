@@ -1,5 +1,7 @@
 # EECS 4413 Project
 
+(NOTE FOR TA: The deployed backend cold starts so if the app via the link doesn't work at first, it will work in <50 seconds after cold starting)
+
 Full-stack e-commerce web application built with React, FastAPI, and PostgreSQL.
 
 ## Getting Started
