@@ -3,25 +3,57 @@ import { Link, Navigate } from "react-router-dom"
 import { useStore } from "../store.jsx"
 
 export default function Account() {
-  const { user, orders, products, logout, updateProfile } = useStore()
-  const mine = orders.filter((o) => o.userId === user?.id)
-  const [firstName, setFirstName] = useState(user?.firstName ?? "")
-  const [lastName, setLastName] = useState(user?.lastName ?? "")
-  const [saved, setSaved] = useState(false)
-
   useEffect(() => {
     setFirstName(user?.firstName ?? "")
     setLastName(user?.lastName ?? "")
   }, [user?.id, user?.firstName, user?.lastName])
+  
+  const { user, orders, products, logout, updateProfile } = useStore();
+  const mine = orders.filter((o) => o.userId === user?.id);
+  const [firstName, setFirstName] = useState(user?.firstName ?? "");
+  const [lastName, setLastName] = useState(user?.lastName ?? "");
+  const [shippingStreet, setShippingStreet] = useState(user?.shippingStreet ?? "");
+  const [shippingProvince, setShippingProvince] = useState(user?.shippingProvince ?? "");
+  const [shippingCountry, setShippingCountry] = useState(user?.shippingCountry ?? "");
+  const [shippingZip, setShippingZip] = useState(user?.shippingZip ?? "");
+  const [cardLast4, setCardLast4] = useState(user?.cardLast4 ?? "");
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    setFirstName(user?.firstName ?? "");
+    setLastName(user?.lastName ?? "");
+    setShippingStreet(user?.shippingStreet ?? "");
+    setShippingProvince(user?.shippingProvince ?? "");
+    setShippingCountry(user?.shippingCountry ?? "");
+    setShippingZip(user?.shippingZip ?? "");
+    setCardLast4(user?.cardLast4 ?? "");
+  }, [
+    user?.id,
+    user?.firstName,
+    user?.lastName,
+    user?.shippingStreet,
+    user?.shippingProvince,
+    user?.shippingCountry,
+    user?.shippingZip,
+    user?.cardLast4,
+  ]);
 
   if (!user) return <Navigate to="/login" replace />
 
   const save = async (e) => {
     e.preventDefault()
-    await updateProfile({ firstName, lastName })
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
-  }
+    await updateProfile({
+      firstName,
+      lastName,
+      shippingStreet,
+      shippingProvince,
+      shippingCountry,
+      shippingZip,
+      cardLast4,
+    });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
 
   return (
     <div className="space-y-8">
@@ -38,13 +70,48 @@ export default function Account() {
       <form onSubmit={save} className="max-w-md space-y-3 text-sm">
         <p className="text-neutral-500">Profile</p>
         <input
+          placeholder="First name"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
         />
         <input
+          placeholder="Last name"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
+          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
+        />
+        <input
+          placeholder="Street"
+          value={shippingStreet}
+          onChange={(e) => setShippingStreet(e.target.value)}
+          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
+        />
+        <input
+          placeholder="Province"
+          value={shippingProvince}
+          onChange={(e) => setShippingProvince(e.target.value)}
+          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
+        />
+        <input
+          placeholder="Country"
+          value={shippingCountry}
+          onChange={(e) => setShippingCountry(e.target.value)}
+          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
+        />
+        <input
+          placeholder="Postal / ZIP"
+          value={shippingZip}
+          onChange={(e) => setShippingZip(e.target.value)}
+          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
+        />
+        <input
+          placeholder="Card last 4"
+          maxLength={4}
+          value={cardLast4}
+          onChange={(e) =>
+            setCardLast4(e.target.value.replace(/\D/g, "").slice(0, 4))
+          }
           className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
         />
         <p className="text-xs text-neutral-500">
@@ -55,7 +122,7 @@ export default function Account() {
           type="submit"
           className="rounded-lg bg-neutral-800 px-4 py-2 text-neutral-100 hover:bg-neutral-700"
         >
-          Save name
+          Save profile
         </button>
         {saved && <span className="text-emerald-400">Saved.</span>}
       </form>

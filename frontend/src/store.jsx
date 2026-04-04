@@ -91,17 +91,21 @@ export function StoreProvider({ children }) {
       } catch {
         if (!cancel) setProducts([])
       }
-      try {
-        const { data } = await api.get("/users/")
-        if (!cancel) setUsers(data.map(mapUser))
-      } catch {
-        if (!cancel) setUsers([])
+      if (user?.role === "admin") {
+        try {
+          const { data } = await api.get("/users/")
+          if (!cancel) setUsers(data.map(mapUser))
+        } catch {
+          if (!cancel) setUsers([])
+        }
+      } else if (!cancel) {
+        setUsers([])
       }
     })()
     return () => {
       cancel = true
     }
-  }, [])
+  }, [user?.role])
 
   useEffect(() => {
     if (user) refreshOrders(user)
@@ -129,6 +133,14 @@ export function StoreProvider({ children }) {
           const { data } = await api.post("/auth/login", { email, password })
           const session = mapUser(data)
           setUser(session)
+          if (session.role === "admin") {
+            try {
+              const { data: udata } = await api.get("/users/")
+              setUsers(udata.map(mapUser))
+            } catch {
+              setUsers([])
+            }
+          }
           await refreshOrders(session)
           return { ok: true }
         } catch (e) {
@@ -155,12 +167,6 @@ export function StoreProvider({ children }) {
           const session = mapUser(data)
           setUser(session)
           await refreshOrders(session)
-          try {
-            const { data: udata } = await api.get("/users/")
-            setUsers(udata.map(mapUser))
-          } catch {
-            /* ignore */
-          }
           return { ok: true }
         } catch (e) {
           return {
@@ -176,6 +182,11 @@ export function StoreProvider({ children }) {
           await api.patch(`/users/${user.id}`, {
             first_name: patch.firstName,
             last_name: patch.lastName,
+            shipping_street: patch.shippingStreet,
+            shipping_province: patch.shippingProvince,
+            shipping_country: patch.shippingCountry,
+            shipping_zip: patch.shippingZip,
+            card_last4: patch.cardLast4,
           })
           const { data } = await api.get(`/users/${user.id}`)
           setUser(mapUser(data))
@@ -280,6 +291,11 @@ export function StoreProvider({ children }) {
         await api.patch(`/users/${id}`, {
           first_name: patch.firstName,
           last_name: patch.lastName,
+          shipping_street: patch.shippingStreet,
+          shipping_province: patch.shippingProvince,
+          shipping_country: patch.shippingCountry,
+          shipping_zip: patch.shippingZip,
+          card_last4: patch.cardLast4,
         })
         const { data } = await api.get("/users/")
         setUsers(data.map(mapUser))

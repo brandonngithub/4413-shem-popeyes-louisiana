@@ -2,6 +2,15 @@ const base = () => import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000";
 
 async function req(method, path, body) {
   const headers = {};
+  try {
+    const raw = localStorage.getItem("user");
+    const user = raw ? JSON.parse(raw) : null;
+    if (user?.id != null) {
+      headers["X-User-Id"] = String(user.id);
+    }
+  } catch {
+    /* ignore */
+  }
   if (body != null) {
     headers["Content-Type"] = "application/json";
   }
@@ -88,6 +97,7 @@ export function mapOrder(o) {
     userId: o.user_id,
     date,
     total_price: o.total_price,
+    total: o.total_price,
     lines: (o.items ?? []).map((i) => ({
       itemId: String(i.product_id),
       name: "",

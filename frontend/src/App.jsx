@@ -1,4 +1,4 @@
-import { Link, Outlet, Route, Routes } from "react-router-dom"
+import { Link, Navigate, Outlet, Route, Routes } from "react-router-dom"
 import { useStore } from "./store.jsx"
 import Account from "./pages/Account.jsx"
 import Admin from "./pages/admin/Admin.jsx"
@@ -6,11 +6,19 @@ import Users from "./pages/admin/Users.jsx"
 import Orders from "./pages/admin/Orders.jsx"
 import Products from "./pages/admin/Products.jsx";
 import CreateProduct from "./pages/admin/CreateProduct.jsx";
+import Inventory from "./pages/admin/Inventory.jsx"
 import Catalog from "./pages/Catalog.jsx"
 import Cart from "./pages/Cart.jsx"
 import Checkout from "./pages/Checkout.jsx"
 import ProductDetail from "./pages/ProductDetail.jsx"
 import { Login, Register } from "./pages/Auth.jsx"
+
+function AdminRoute({ children }) {
+  const { user } = useStore()
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role !== "admin") return <Navigate to="/" replace />
+  return children
+}
 
 function Layout() {
   const { user, cart, logout } = useStore()
@@ -77,11 +85,47 @@ export default function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="account" element={<Account />} />
-        <Route path="admin" element={<Admin />} />
-        <Route path="admin/users" element={<Users />} />
-        <Route path="admin/orders" element={<Orders />} />
         <Route path="admin/products" element={<Products />} />
-        <Route path="admin/create-product" element={<CreateProduct />} />
+        <Route
+          path="admin"
+          element={
+            <AdminRoute>
+              <Admin />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/users"
+          element={
+            <AdminRoute>
+              <Users />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/orders"
+          element={
+            <AdminRoute>
+              <Orders />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/create-product"
+          element={
+            <AdminRoute>
+              <CreateProduct />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="admin/inventory"
+          element={
+            <AdminRoute>
+              <Inventory />
+            </AdminRoute>
+          }
+        />
       </Route>
     </Routes>
   )

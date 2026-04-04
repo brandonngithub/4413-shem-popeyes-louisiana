@@ -7,6 +7,7 @@ export default function Catalog() {
   const [q, setQ] = useState("");
   const [category, setCategory] = useState("all");
   const [brand, setBrand] = useState("all");
+  const [model, setModel] = useState("all");
   const [sort, setSort] = useState("name-asc");
 
   const categories = useMemo(
@@ -17,16 +18,22 @@ export default function Catalog() {
     () => ["all", ...new Set(products.map((p) => p.brand))],
     [products]
   );
+  const models = useMemo(
+    () => ["all", ...new Set(products.map((p) => p.model).filter(Boolean))],
+    [products]
+  );
 
   const list = useMemo(() => {
     let rows = products.filter((p) => {
       if (category !== "all" && p.category !== category) return false;
       if (brand !== "all" && p.brand !== brand) return false;
+      if (model !== "all" && p.model !== model) return false;
       if (!q.trim()) return true;
       const s = q.toLowerCase();
       return (
         p.name.toLowerCase().includes(s) ||
         p.brand.toLowerCase().includes(s) ||
+        p.model.toLowerCase().includes(s) ||
         p.category.toLowerCase().includes(s) ||
         p.description.toLowerCase().includes(s)
       );
@@ -39,7 +46,7 @@ export default function Catalog() {
       return dir === "asc" ? c : -c;
     });
     return rows;
-  }, [products, q, category, brand, sort]);
+  }, [products, q, category, brand, model, sort]);
 
   return (
     <div className="space-y-6">
@@ -70,6 +77,17 @@ export default function Catalog() {
           {brands.map((b) => (
             <option key={b} value={b}>
               {b === "all" ? "All brands" : b}
+            </option>
+          ))}
+        </select>
+        <select
+          value={model}
+          onChange={(e) => setModel(e.target.value)}
+          className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
+        >
+          {models.map((m) => (
+            <option key={m} value={m}>
+              {m === "all" ? "All models" : m}
             </option>
           ))}
         </select>

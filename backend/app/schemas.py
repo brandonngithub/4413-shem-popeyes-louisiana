@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from app.models import OrderStatus, ProductCategory, UserRole
 
 class LoginRequest(BaseModel):
@@ -59,8 +59,8 @@ class Product(ProductBase):
 
 class OrderItemBase(BaseModel):
     product_id: int
-    quantity: int
-    price_at_purchase: float
+    quantity: int = Field(ge=1)
+    price_at_purchase: float = Field(ge=0)
 
 class OrderItem(OrderItemBase):
     id: int

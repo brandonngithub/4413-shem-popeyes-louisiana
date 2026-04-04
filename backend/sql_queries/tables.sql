@@ -8,7 +8,7 @@ DROP TYPE IF EXISTS product_category CASCADE;
 DROP TYPE IF EXISTS order_status CASCADE;
 
 CREATE TYPE user_role AS ENUM ('CUSTOMER', 'ADMIN');
-CREATE TYPE product_category AS ENUM ('BOOK', 'COMPUTER');
+CREATE TYPE product_category AS ENUM ('FOOD', 'ELECTRONIC', 'ACCESSORIES', 'CLOTHING', 'BEVERAGE', 'BOOK', 'OTHER');
 CREATE TYPE order_status AS ENUM ('PLACED', 'SHIPPED', 'DELIVERED', 'CANCELLED');
 
 CREATE TABLE users (
@@ -17,7 +17,7 @@ CREATE TABLE users (
     password_hash TEXT NOT NULL,
     first_name VARCHAR(100),
     last_name VARCHAR(100),
-    role user_role NOT NULL DEFAULT "CUSTOMER",
+    role user_role NOT NULL DEFAULT 'CUSTOMER',
 
     shipping_street TEXT,
     shipping_province VARCHAR(50),
