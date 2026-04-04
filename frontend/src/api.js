@@ -87,12 +87,12 @@ export function mapOrder(o) {
     id: o.id,
     userId: o.user_id,
     date,
-    total: o.total,
+    total: o.total_price ?? o.total,
     lines: (o.items ?? []).map((i) => ({
       itemId: String(i.product_id),
       name: "",
       qty: i.quantity,
-      unitPrice: i.price,
+      unitPrice: i.price_at_purchase ?? i.price,
     })),
   };
 }

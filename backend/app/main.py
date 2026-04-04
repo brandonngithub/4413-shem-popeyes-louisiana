@@ -204,7 +204,7 @@ def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
 
     db_order = models.Order(
         user_id=order.user_id,
-        total=total,
+        total_price=total,
         status=order.status or models.OrderStatus.PLACED,
     )
     db.add(db_order)
@@ -215,7 +215,7 @@ def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
                 order_id=db_order.id,
                 product_id=p.id,
                 quantity=qty,
-                price=price,
+                price_at_purchase=price,
             )
         )
         p.stock -= qty
