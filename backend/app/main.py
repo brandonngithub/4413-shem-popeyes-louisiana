@@ -23,7 +23,6 @@ def _cors_allow_origins() -> List[str]:
         for o in settings.CORS_ORIGIN.split(",")
         if o.strip()
     ]
-    # Preserve order, drop duplicates
     seen: set[str] = set()
     out: List[str] = []
     for o in local + extra:
@@ -59,7 +58,7 @@ app.add_middleware(
 Base.metadata.create_all(bind=engine)
 seed_if_empty()
 
-_checkout_attempts = {}
+_checkout_attempts: dict[int, int] = {}
 
 
 def _current_user(

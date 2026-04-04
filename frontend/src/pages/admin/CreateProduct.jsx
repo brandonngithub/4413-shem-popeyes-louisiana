@@ -96,7 +96,7 @@ export default function CreateProduct() {
               onChange={(event) =>
                 handleChange("description", event.target.value)
               }
-              className="w-full min-h-[120px] rounded-2xl border border-neutral-700 bg-neutral-950 px-4 py-3 text-neutral-100"
+              className="w-full min-h-30 rounded-2xl border border-neutral-700 bg-neutral-950 px-4 py-3 text-neutral-100"
             />
           </label>
           <label className="space-y-2 text-sm text-neutral-300">

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { api, errMsg } from "../../api.js"
 import { useStore } from "../../store.jsx"
 
 export default function Products() {
@@ -12,6 +13,7 @@ export default function Products() {
     stock: "",
     image: "",
   })
+  const [error, setError] = useState("")
 
   const handleEditProduct = (product) => {
     setEditingProduct(product.id)
@@ -25,29 +27,23 @@ export default function Products() {
   }
 
   const handleSaveProduct = async () => {
+    if (!editingProduct) return
+    setError("")
     try {
+      const base = products.find((p) => p.id === editingProduct)
+      if (!base) return
       const updatedData = {
         name: editForm.name,
         description: editForm.description,
         price: parseFloat(editForm.price),
         stock: parseInt(editForm.stock, 10),
         image: editForm.image,
-        category: editingProduct
-          ? products.find((p) => p.id === editingProduct)?.category
-          : "",
-        brand: editingProduct
-          ? products.find((p) => p.id === editingProduct)?.brand
-          : "",
-        model: editingProduct
-          ? products.find((p) => p.id === editingProduct)?.model
-          : "",
+        category: base.category,
+        brand: base.brand,
+        model: base.model,
       }
 
-      await fetch(`http://127.0.0.1:8000/products/${editingProduct}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedData),
-      })
+      await api.put(`/products/${editingProduct}`, updatedData)
 
       await refreshProducts()
       setEditingProduct(null)
@@ -58,8 +54,8 @@ export default function Products() {
         stock: "",
         image: "",
       })
-    } catch (error) {
-      console.error("Failed to update product:", error)
+    } catch (e) {
+      setError(errMsg(e, "Failed to update product."))
     }
   }
 
@@ -91,6 +87,7 @@ export default function Products() {
       </div>
 
       <div className="rounded-3xl border border-neutral-800 bg-neutral-900 p-6">
+        {error && <p className="mb-3 text-sm text-rose-400">{error}</p>}
         {products.length === 0 ? (
           <p className="text-neutral-500">No products available yet.</p>
         ) : (
@@ -101,7 +98,6 @@ export default function Products() {
                 className="rounded-2xl border border-neutral-800 bg-neutral-950 p-4"
               >
                 {editingProduct === product.id ? (
-                  // Edit Mode
                   <div className="space-y-4">
                     <div className="grid gap-4 md:grid-cols-2">
                       <div className="space-y-2">
@@ -187,7 +183,6 @@ export default function Products() {
                     </div>
                   </div>
                 ) : (
-                  // View Mode
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
                       <img
