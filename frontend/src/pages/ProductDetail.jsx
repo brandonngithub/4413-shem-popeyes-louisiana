@@ -38,18 +38,18 @@ export default function ProductDetail() {
           <dt className="text-neutral-500">In stock</dt>
           <dd className="text-neutral-200">{p.quantity}</dd>
         </dl>
-        <div className="flex flex-wrap items-center gap-3">
-          <label className="flex items-center gap-2 text-sm text-neutral-400">
-            Qty
-            <input
-              type="number"
-              min={1}
-              max={p.quantity}
-              value={qty}
-              onChange={(e) => setQty(Number(e.target.value) || 1)}
-              className="w-20 rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-neutral-100"
-            />
-          </label>
+        <label className="flex items-center gap-2 text-m text-neutral-400">
+          Qty
+          <input
+            type="number"
+            min={1}
+            max={p.quantity}
+            value={qty}
+            onChange={(e) => setQty(Number(e.target.value) || 1)}
+            className="w-20 rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-neutral-100"
+          />
+        </label>
+        <div className="flex flex-wrap flex-col gap-3">
           <button
             type="button"
             onClick={() => {
@@ -60,10 +60,43 @@ export default function ProductDetail() {
           >
             Add to cart
           </button>
-          <Link to="/" className="text-sm text-amber-400 underline">
-            Continue shopping
-          </Link>
+          <button
+            className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-neutral-950 hover:bg-amber-400"
+          >
+            <Link to="/" className="text-sm">
+              Continue shopping
+            </Link>
+          </button>
+          
         </div>
+      </div>
+      <div className="md:col-span-2">
+        <h2 className="mb-4 text-xl font-semibold text-neutral-100">Related Products</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {products
+            .filter((x) => x.category === p.category && x.id !== p.id)
+            .slice(0, 4)
+            .map((related) => (
+              <Link
+                key={related.id}
+                to={`/product/${related.id}`}
+                className="group block rounded-xl border border-neutral-800 bg-neutral-900 p-4 transition hover:border-amber-400"
+              >
+                <img
+                  src={related.image}
+                  alt=""
+                  className="mb-3 aspect-square w-full rounded-lg object-cover"
+                />
+                <h3 className="font-medium text-neutral-100 group-hover:text-amber-400">
+                  {related.name}
+                </h3>
+                <p className="text-sm text-neutral-400">${related.price}</p>
+              </Link>
+            ))}
+        </div>
+        {products.filter((x) => x.category === p.category && x.id !== p.id).length === 0 && (
+          <p className="text-neutral-500">No related products found.</p>
+        )}
       </div>
     </div>
   );

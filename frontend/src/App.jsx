@@ -4,7 +4,8 @@ import Account from "./pages/Account.jsx"
 import Admin from "./pages/admin/Admin.jsx"
 import Users from "./pages/admin/Users.jsx"
 import Orders from "./pages/admin/Orders.jsx"
-import CreateProduct from "./pages/admin/CreateProduct.jsx"
+import Products from "./pages/admin/Products.jsx";
+import CreateProduct from "./pages/admin/CreateProduct.jsx";
 import Catalog from "./pages/Catalog.jsx"
 import Cart from "./pages/Cart.jsx"
 import Checkout from "./pages/Checkout.jsx"
@@ -79,6 +80,7 @@ export default function App() {
         <Route path="admin" element={<Admin />} />
         <Route path="admin/users" element={<Users />} />
         <Route path="admin/orders" element={<Orders />} />
+        <Route path="admin/products" element={<Products />} />
         <Route path="admin/create-product" element={<CreateProduct />} />
       </Route>
     </Routes>
