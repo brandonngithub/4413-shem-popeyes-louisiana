@@ -56,7 +56,7 @@ export default function Catalog() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search keyword…"
-          className="min-w-[12rem] flex-1 rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100 placeholder:text-neutral-500"
+          className="min-w-48 flex-1 rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100 placeholder:text-neutral-500"
         />
         <select
           value={category}
