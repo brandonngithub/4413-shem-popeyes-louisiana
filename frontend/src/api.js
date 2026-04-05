@@ -92,10 +92,14 @@ export function productToApi(p) {
 export function mapOrder(o) {
   const raw = o.created_at;
   const date = typeof raw === "string" ? raw.slice(0, 10) : "";
+  const status =
+    typeof o.status === "string" ? o.status : o.status?.value ?? "placed";
   return {
     id: o.id,
     userId: o.user_id,
     date,
+    createdAt: raw,
+    status,
     total_price: o.total_price,
     total: o.total_price,
     lines: (o.items ?? []).map((i) => ({

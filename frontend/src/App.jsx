@@ -3,9 +3,10 @@ import { useStore } from "./store.jsx"
 import Account from "./pages/Account.jsx"
 import Admin from "./pages/admin/Admin.jsx"
 import Users from "./pages/admin/Users.jsx"
-import Orders from "./pages/admin/Orders.jsx"
+import AdminOrders from "./pages/admin/Orders.jsx"
 import Products from "./pages/admin/Products.jsx"
 import CreateProduct from "./pages/admin/CreateProduct.jsx"
+import Orders from "./pages/Orders.jsx"
 import Catalog from "./pages/Catalog.jsx"
 import Cart from "./pages/Cart.jsx"
 import Checkout from "./pages/Checkout.jsx"
@@ -40,6 +41,9 @@ function Layout() {
             <>
               <Link to="/account" className="hover:text-neutral-50">
                 Account
+              </Link>
+              <Link to="/orders" className="hover:text-neutral-50">
+                Orders
               </Link>
               {user.role === "admin" && (
                 <Link to="/admin" className="hover:text-neutral-50">
@@ -84,6 +88,7 @@ export default function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="account" element={<Account />} />
+        <Route path="orders" element={<Orders />} />
         <Route
           path="admin"
           element={
@@ -112,7 +117,7 @@ export default function App() {
           path="admin/orders"
           element={
             <AdminRoute>
-              <Orders />
+              <AdminOrders />
             </AdminRoute>
           }
         />

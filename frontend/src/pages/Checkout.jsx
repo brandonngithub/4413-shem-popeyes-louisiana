@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useStore } from "../store.jsx";
 
 export default function Checkout() {
+  const nav = useNavigate();
   const { user, cart, checkout } = useStore();
   const [useProfile, setUseProfile] = useState(true);
   const [street, setStreet] = useState(user?.shippingStreet ?? "");
@@ -23,6 +24,16 @@ export default function Checkout() {
       shipping: { street, province, country, zip },
       cardLast4,
     });
+    if (r.ok) {
+      nav("/orders", {
+        state: {
+          orderSuccess: true,
+          orderId: r.orderId,
+          totalPrice: r.total_price,
+        },
+      });
+      return;
+    }
     setMsg(r);
   };
 
@@ -86,7 +97,7 @@ export default function Checkout() {
           Confirm order
         </button>
       </form>
-      {msg && (
+      {msg && !msg.ok && (
         <div
           className={`rounded-lg border p-4 text-sm ${
             msg.ok
@@ -94,16 +105,7 @@ export default function Checkout() {
               : "border-red-900 bg-red-950/40 text-red-200"
           }`}
         >
-          {msg.ok ? (
-            <>
-              Order {msg.orderId} placed. Total ${msg.total_price}. Cart cleared.{" "}
-              <Link to="/account" className="underline">
-                View account
-              </Link>
-            </>
-          ) : (
-            msg.error
-          )}
+          {msg.error}
         </div>
       )}
       <Link to="/cart" className="text-sm text-amber-400 underline">
