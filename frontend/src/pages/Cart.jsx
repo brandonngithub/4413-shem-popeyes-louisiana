@@ -19,7 +19,7 @@ export default function Cart() {
       <h1 className="text-2xl font-semibold text-neutral-100">Cart</h1>
       {lines.length === 0 ? (
         <p className="text-neutral-500">
-          Empty. <Link to="/" className="text-amber-400 underline">Browse catalog</Link>
+          Cart is empty, add something from the shop!
         </p>
       ) : (
         <>

@@ -7,7 +7,7 @@ import AdminOrders from "./pages/admin/Orders.jsx"
 import Products from "./pages/admin/Products.jsx"
 import CreateProduct from "./pages/admin/CreateProduct.jsx"
 import Orders from "./pages/Orders.jsx"
-import Catalog from "./pages/Catalog.jsx"
+import Shop from "./pages/Shop.jsx"
 import Cart from "./pages/Cart.jsx"
 import Checkout from "./pages/Checkout.jsx"
 import ProductDetail from "./pages/ProductDetail.jsx"
@@ -32,7 +32,7 @@ function Layout() {
             Shem Store
           </Link>
           <Link to="/" className="hover:text-neutral-50">
-            Catalog
+            Shop
           </Link>
           <Link to="/cart" className="hover:text-neutral-50">
             Cart{count > 0 ? ` (${count})` : ""}
@@ -81,7 +81,7 @@ export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route index element={<Catalog />} />
+        <Route index element={<Shop />} />
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="cart" element={<Cart />} />
         <Route path="checkout" element={<Checkout />} />

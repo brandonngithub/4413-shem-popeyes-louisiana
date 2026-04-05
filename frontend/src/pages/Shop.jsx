@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useStore } from "../store.jsx";
 
-export default function Catalog() {
+export default function Shop() {
   const { products } = useStore();
   const [q, setQ] = useState("");
   const [category, setCategory] = useState("all");
@@ -50,7 +50,7 @@ export default function Catalog() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-neutral-100">Catalog</h1>
+      <h1 className="text-2xl font-semibold text-neutral-100">Shop</h1>
       <div className="flex flex-wrap gap-3 text-sm">
         <input
           value={q}

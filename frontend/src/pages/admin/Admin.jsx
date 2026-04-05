@@ -55,7 +55,7 @@ export default function Admin() {
             Create Product
           </h2>
           <p className="mt-3 text-sm text-neutral-400">
-            Add a new product to the catalog.
+            Add a new product to the shop
           </p>
           <span className="mt-6 inline-flex items-center text-amber-400 transition group-hover:text-amber-300">
             Open create product page

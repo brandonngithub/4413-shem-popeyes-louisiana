@@ -12,7 +12,7 @@ export default function ProductDetail() {
   if (!p)
     return (
       <p className="text-neutral-500">
-        Product not found. <Link to="/" className="text-amber-400 underline">Catalog</Link>
+        Product not found. <Link to="/" className="text-amber-400 underline">Shop</Link>
       </p>
     );
 

@@ -2,9 +2,32 @@ import { useEffect, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
 import { useStore } from "../store.jsx"
 
+function Field({ label, value, onChange, placeholder, readOnly = false, maxLength, type = "text" }) {
+  const base =
+    "w-full rounded-lg border px-3 py-2 text-neutral-100 transition " +
+    (readOnly
+      ? "border-neutral-800 bg-neutral-900/40 text-neutral-500 cursor-not-allowed"
+      : "border-neutral-700 bg-neutral-900"
+    )
+
+  return (
+    <label className="space-y-2 text-sm text-neutral-300">
+      <span className="block">{label}</span>
+      <input
+        type={type}
+        value={value}
+        onChange={readOnly ? undefined : onChange}
+        placeholder={placeholder}
+        disabled={readOnly}
+        maxLength={maxLength}
+        className={base}
+      />
+    </label>
+  )
+}
+
 export default function Account() {
-  const { user, orders, products, logout, updateProfile } = useStore();
-  const mine = orders.filter((o) => o.userId === user?.id);
+  const { user, logout, updateProfile } = useStore();
   const [firstName, setFirstName] = useState(user?.firstName ?? "");
   const [lastName, setLastName] = useState(user?.lastName ?? "");
   const [shippingStreet, setShippingStreet] = useState(user?.shippingStreet ?? "");
@@ -54,102 +77,87 @@ export default function Account() {
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold text-neutral-100">Account</h1>
-        <button
-          type="button"
-          onClick={() => logout()}
-          className="text-sm text-amber-400 underline"
-        >
-          Sign out
-        </button>
       </div>
-      <form onSubmit={save} className="max-w-md space-y-3 text-sm">
-        <p className="text-neutral-500">Profile</p>
-        <input
-          placeholder="First name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
-        />
-        <input
-          placeholder="Last name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
-        />
-        <input
-          placeholder="Street"
-          value={shippingStreet}
-          onChange={(e) => setShippingStreet(e.target.value)}
-          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
-        />
-        <input
-          placeholder="Province"
-          value={shippingProvince}
-          onChange={(e) => setShippingProvince(e.target.value)}
-          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
-        />
-        <input
-          placeholder="Country"
-          value={shippingCountry}
-          onChange={(e) => setShippingCountry(e.target.value)}
-          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
-        />
-        <input
-          placeholder="Postal / ZIP"
-          value={shippingZip}
-          onChange={(e) => setShippingZip(e.target.value)}
-          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
-        />
-        <input
-          placeholder="Card last 4"
-          maxLength={4}
-          value={cardLast4}
-          onChange={(e) =>
-            setCardLast4(e.target.value.replace(/\D/g, "").slice(0, 4))
-          }
-          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
-        />
-        <p className="text-xs text-neutral-500">
-          {user.email} · card …{user.cardLast4} · {user.shippingStreet},{" "}
-          {user.shippingZip}
-        </p>
-        <button
-          type="submit"
-          className="rounded-lg bg-neutral-800 px-4 py-2 text-neutral-100 hover:bg-neutral-700"
-        >
-          Save profile
-        </button>
-        {saved && <span className="text-emerald-400">Saved.</span>}
+      <form onSubmit={save} className="max-w-2xl space-y-6 text-sm">
+        <section className="space-y-3 rounded-xl border border-neutral-800 bg-neutral-900/40 p-4">
+          <p className="text-neutral-400">Profile</p>
+          <div className="grid gap-3 md:grid-cols-2">
+            <Field
+              label="First name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="First name"
+            />
+            <Field
+              label="Last name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Last name"
+            />
+            <Field
+              label="Email"
+              value={user.email}
+              readOnly
+              placeholder="Email"
+            />
+          </div>
+        </section>
+
+        <section className="space-y-3 rounded-xl border border-neutral-800 bg-neutral-900/40 p-4">
+          <p className="text-neutral-400">Address</p>
+          <div className="grid gap-3 md:grid-cols-2">
+            <Field
+              label="Street"
+              value={shippingStreet}
+              onChange={(e) => setShippingStreet(e.target.value)}
+              placeholder="Street"
+            />
+            <Field
+              label="Province"
+              value={shippingProvince}
+              onChange={(e) => setShippingProvince(e.target.value)}
+              placeholder="Province"
+            />
+            <Field
+              label="Country"
+              value={shippingCountry}
+              onChange={(e) => setShippingCountry(e.target.value)}
+              placeholder="Country"
+            />
+            <Field
+              label="Postal / ZIP"
+              value={shippingZip}
+              onChange={(e) => setShippingZip(e.target.value)}
+              placeholder="Postal / ZIP"
+            />
+          </div>
+        </section>
+
+        <section className="space-y-3 rounded-xl border border-neutral-800 bg-neutral-900/40 p-4">
+          <p className="text-neutral-400">Payment</p>
+          <div className="grid gap-3 md:grid-cols-2">
+            <Field
+              label="Card Number"
+              value={`•••• •••• •••• ${user.cardLast4 || "----"}`}
+              readOnly
+              placeholder="Card Number"
+            />
+          </div>
+          <p className="text-xs text-neutral-500">
+            Saved values update your checkout profile.
+          </p>
+        </section>
+
+        <div className="flex items-center gap-3">
+          <button
+            type="submit"
+            className="rounded-lg bg-neutral-800 px-4 py-2 text-neutral-100 hover:bg-neutral-700"
+          >
+            Save profile
+          </button>
+          {saved && <span className="text-emerald-400">Saved.</span>}
+        </div>
       </form>
-      <div>
-        <p className="mb-2 text-neutral-500">Purchase history</p>
-        <ul className="space-y-2 text-sm">
-          {mine.map((o) => (
-            <li
-              key={o.id}
-              className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-3"
-            >
-              <span className="text-neutral-400">{o.date}</span> · $
-              {o.total_price}
-              <ul className="mt-1 text-neutral-500">
-                {o.lines.map((l) => (
-                  <li key={l.itemId}>
-                    {products.find((p) => String(p.id) === l.itemId)?.name ??
-                      l.itemId}{" "}
-                    × {l.qty} @ ${l.unitPrice}
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-        {mine.length === 0 && (
-          <p className="text-neutral-600">No orders yet.</p>
-        )}
-      </div>
-      <Link to="/" className="text-sm text-amber-400 underline">
-        Catalog
-      </Link>
     </div>
   )
 }

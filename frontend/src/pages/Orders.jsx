@@ -73,15 +73,28 @@ export default function Orders() {
         <ul className="space-y-3">
           {mine.map((o) => {
             const label = formatStatus(o, nowMs)
+            const firstItemId = o.lines[0]?.itemId
+            const firstProduct = products.find(
+              (p) => String(p.id) === String(firstItemId),
+            )
+            const iconSrc =
+              firstProduct?.image ?? "https://picsum.photos/seed/order/80/80"
             return (
               <li
                 key={o.id}
                 className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-4"
               >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-sm text-neutral-300">
-                    Order #{o.id} • {o.date}
-                  </p>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <img
+                      src={iconSrc}
+                      alt=""
+                      className="h-10 w-10 rounded object-cover"
+                    />
+                    <p className="text-sm text-neutral-300">
+                      Order #{o.id} • {o.date}
+                    </p>
+                  </div>
                   <p className="text-sm text-amber-400">${o.total_price}</p>
                 </div>
                 <p className="mt-1 text-sm text-neutral-400">
