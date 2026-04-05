@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { useStore } from "../../store.jsx"
 
 export default function Orders() {
-  const { orders, products } = useStore()
+  const { orders, products, updateOrderStatus } = useStore()
   const [userFilter, setUserFilter] = useState("")
   const [productFilter, setProductFilter] = useState("all")
   const [fromDate, setFromDate] = useState("")
@@ -82,6 +82,19 @@ export default function Orders() {
                 <p className="text-sm text-neutral-400">
                   User ID: {order.userId}
                 </p>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-neutral-400">Order Status:</span>
+                  <select
+                    value={order.status}
+                    onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                    className="rounded border border-neutral-700 bg-neutral-950 px-2 py-1 text-sm text-neutral-100"
+                  >
+                    <option value="placed">Placed</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
                 <p className="text-sm text-neutral-400">
                   Total: ${order.total_price?.toFixed(2) ?? "0.00"}
                 </p>

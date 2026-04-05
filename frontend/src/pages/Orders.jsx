@@ -2,19 +2,11 @@ import { useEffect, useMemo, useState } from "react"
 import { Link, Navigate, useLocation } from "react-router-dom"
 import { useStore } from "../store.jsx"
 
-function formatStatus(order, nowMs) {
+function formatStatus(order) {
   if (order.status === "cancelled") return "Cancelled"
   if (order.status === "delivered") return "Delivered"
   if (order.status === "shipped") return "Shipped"
-
-  const created = new Date(order.createdAt).getTime()
-  if (!Number.isFinite(created)) return "Unshipped"
-
-  const ageMin = (nowMs - created) / 60000
-  if (ageMin < 1) return "Pending"
-  if (ageMin < 2) return "Unshipped"
-  if (ageMin < 3) return "Shipped"
-  return "Delivered"
+  if (order.status === "placed") return "Placed"
 }
 
 function statusHint(label) {
@@ -28,13 +20,7 @@ function statusHint(label) {
 export default function Orders() {
   const { user, orders, products } = useStore()
   const { state } = useLocation()
-  const [nowMs, setNowMs] = useState(Date.now())
   const [showPopup, setShowPopup] = useState(Boolean(state?.orderSuccess))
-
-  useEffect(() => {
-    const t = setInterval(() => setNowMs(Date.now()), 15000)
-    return () => clearInterval(t)
-  }, [])
 
   const mine = useMemo(
     () => orders.filter((o) => o.userId === user?.id),
@@ -72,7 +58,7 @@ export default function Orders() {
       ) : (
         <ul className="space-y-3">
           {mine.map((o) => {
-            const label = formatStatus(o, nowMs)
+            const label = formatStatus(o)
             const firstItemId = o.lines[0]?.itemId
             const firstProduct = products.find(
               (p) => String(p.id) === String(firstItemId),

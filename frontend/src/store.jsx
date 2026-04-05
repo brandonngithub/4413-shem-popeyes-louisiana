@@ -314,6 +314,19 @@ export function StoreProvider({ children }) {
           localStorage.removeItem("user")
         }
       },
+
+      updateOrderStatus: async (orderId, status) => {
+        const current = orders.find((o) => o.id === orderId)
+        if (!current) return
+        await api.put(`/orders/${orderId}`, {
+          user_id: current.userId,
+          total_price: current.total_price,
+          status,
+        })
+        setOrders((orders) =>
+          orders.map((o) => (o.id === orderId ? { ...o, status } : o)),
+        )
+      },
     }
   }, [products, users, orders, cart, user, setCart, refreshOrders])
 
