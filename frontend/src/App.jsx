@@ -28,7 +28,7 @@ function Layout() {
       <header className="border-b border-neutral-800 bg-neutral-900/80">
         <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-3 text-sm">
           <Link to="/" className="font-semibold text-amber-400">
-            E-Store
+            Shem Store
           </Link>
           <Link to="/" className="hover:text-neutral-50">
             Catalog
