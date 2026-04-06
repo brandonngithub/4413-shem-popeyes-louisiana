@@ -289,7 +289,8 @@ def read_user_orders(
 ):
     _require_self_or_admin(actor, user_id)
     orders = OrderDAO(db)
-    return orders.list_for_user(user_id)
+    result = orders.list_for_user(user_id)
+    return result
 
 @app.put("/orders/{order_id}", response_model=schemas.Order)
 def update_order(

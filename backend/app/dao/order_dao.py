@@ -8,29 +8,40 @@ class OrderDAO:
         self.db = db
 
     def list(self, skip: int = 0, limit: int = 100):
-        return (
+        orders = (
             self.db.query(models.Order)
             .options(joinedload(models.Order.items))
             .offset(skip)
             .limit(limit)
             .all()
         )
+        # Filter out invalid items
+        for order in orders:
+            order.items = [item for item in order.items if item.product_id is not None]
+        return orders
 
     def get(self, order_id: int):
-        return (
+        order = (
             self.db.query(models.Order)
             .options(joinedload(models.Order.items))
             .filter(models.Order.id == order_id)
             .first()
         )
+        if order:
+            order.items = [item for item in order.items if item.product_id is not None]
+        return order
 
     def list_for_user(self, user_id: int):
-        return (
+        orders = (
             self.db.query(models.Order)
             .options(joinedload(models.Order.items))
             .filter(models.Order.user_id == user_id)
             .all()
         )
+        # Filter out invalid items
+        for order in orders:
+            order.items = [item for item in order.items if item.product_id is not None]
+        return orders
 
     def create(self, user_id: int, status, total_price: float):
         order = models.Order(user_id=user_id, status=status, total_price=total_price)

@@ -36,11 +36,6 @@ function Layout() {
             <Link to="/cart" className="hover:text-neutral-50">
               Cart{count > 0 ? ` (${count})` : ""}
             </Link>
-            {user ? (
-              <Link to="/orders" className="hover:text-neutral-50">
-                Orders
-              </Link>
-            ) : <></>}
           </div>
           {user ? (
             <>
