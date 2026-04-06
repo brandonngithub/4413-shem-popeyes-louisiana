@@ -18,7 +18,7 @@ function statusHint(label) {
 }
 
 export default function Orders() {
-  const { user, orders, products } = useStore()
+  const { user, orders, products, deleteOrder } = useStore()
   const { state } = useLocation()
   const [showPopup, setShowPopup] = useState(Boolean(state?.orderSuccess))
 
@@ -94,6 +94,15 @@ export default function Orders() {
                     </li>
                   ))}
                 </ul>
+
+                {o.status === "placed" && (
+                  <button
+                    onClick={() => deleteOrder(o.id)}
+                    className="mt-1 text-sm text-red-400 underline hover:text-red-300"
+                  >
+                    Delete Order
+                  </button>
+                )}
               </li>
             )
           })}

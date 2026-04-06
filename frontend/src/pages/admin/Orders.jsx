@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { useStore } from "../../store.jsx"
 
 export default function Orders() {
-  const { orders, products, updateOrderStatus } = useStore()
+  const { orders, products, updateOrderStatus, deleteOrder } = useStore()
   const [userFilter, setUserFilter] = useState("")
   const [productFilter, setProductFilter] = useState("all")
   const [fromDate, setFromDate] = useState("")
@@ -82,6 +82,10 @@ export default function Orders() {
                 <p className="text-sm text-neutral-400">
                   User ID: {order.userId}
                 </p>
+                <p className="text-sm text-neutral-400">
+                  Total: ${order.total_price?.toFixed(2) ?? "0.00"}
+                </p>
+                <p className="text-sm text-neutral-400">Date: {order.date}</p>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-neutral-400">Order Status:</span>
                   <select
@@ -95,10 +99,15 @@ export default function Orders() {
                     <option value="cancelled">Cancelled</option>
                   </select>
                 </div>
-                <p className="text-sm text-neutral-400">
-                  Total: ${order.total_price?.toFixed(2) ?? "0.00"}
-                </p>
-                <p className="text-sm text-neutral-400">Date: {order.date}</p>
+                
+                {order.status === "placed" && (
+                  <button
+                    onClick={() => deleteOrder(order.id)}
+                    className="mt-1 text-sm text-red-400 underline hover:text-red-300"
+                  >
+                    Delete Order
+                  </button>
+                )}
                 <div className="mt-2 text-sm text-neutral-500">
                   {order.lines.map((line, i) => {
                     const p = products.find(

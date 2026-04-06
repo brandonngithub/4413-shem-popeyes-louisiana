@@ -75,5 +75,9 @@ class OrderDAO:
         return order
 
     def delete(self, order: models.Order):
+        # Restore stock
+        for item in order.items:
+            if item.product:
+                item.product.stock += item.quantity
         self.db.delete(order)
         self.db.commit()

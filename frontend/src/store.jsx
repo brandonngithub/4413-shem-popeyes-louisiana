@@ -327,6 +327,11 @@ export function StoreProvider({ children }) {
           orders.map((o) => (o.id === orderId ? { ...o, status } : o)),
         )
       },
+
+      deleteOrder: async (orderId) => {
+        await api.delete(`/orders/${orderId}`)
+        setOrders((orders) => orders.filter((o) => o.id !== orderId))
+      },
     }
   }, [products, users, orders, cart, user, setCart, refreshOrders])
 
