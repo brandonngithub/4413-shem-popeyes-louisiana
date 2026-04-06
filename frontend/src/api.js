@@ -8,8 +8,8 @@ async function req(method, path, body) {
     if (user?.id != null) {
       headers["X-User-Id"] = String(user.id);
     }
-  } catch {
-    /* ignore */
+  } catch (e) {
+    console.log("Error occurred: " + e);
   }
   if (body != null) {
     headers["Content-Type"] = "application/json";
@@ -41,6 +41,7 @@ export const api = {
   post: (path, body) => req("POST", path, body),
   patch: (path, body) => req("PATCH", path, body),
   put: (path, body) => req("PUT", path, body),
+  delete: (path) => req("DELETE", path),
 };
 
 export function mapUser(u) {
@@ -61,8 +62,7 @@ export function mapUser(u) {
 }
 
 export function mapProduct(p) {
-  const cat =
-    typeof p.category === "string" ? p.category : p.category?.value ?? "other";
+  const cat = typeof p.category === "string" ? p.category : p.category?.value ?? "other";
   return {
     id: p.id,
     name: p.name,
@@ -92,8 +92,7 @@ export function productToApi(p) {
 export function mapOrder(o) {
   const raw = o.created_at;
   const date = typeof raw === "string" ? raw.slice(0, 10) : "";
-  const status =
-    typeof o.status === "string" ? o.status : o.status?.value ?? "placed";
+  const status = typeof o.status === "string" ? o.status : o.status?.value ?? "placed";
   return {
     id: o.id,
     userId: o.user_id,

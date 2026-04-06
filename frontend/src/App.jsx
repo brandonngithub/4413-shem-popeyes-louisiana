@@ -1,3 +1,4 @@
+import { IoPersonCircleOutline } from "react-icons/io5";
 import { Link, Navigate, Outlet, Route, Routes } from "react-router-dom"
 import { useStore } from "./store.jsx"
 import Account from "./pages/Account.jsx"
@@ -27,36 +28,43 @@ function Layout() {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-200">
       <header className="border-b border-neutral-800 bg-neutral-900/80">
-        <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-3 text-sm">
-          <Link to="/" className="font-semibold text-amber-400">
-            Shem Store
-          </Link>
-          <Link to="/" className="hover:text-neutral-50">
-            Shop
-          </Link>
-          <Link to="/cart" className="hover:text-neutral-50">
-            Cart{count > 0 ? ` (${count})` : ""}
-          </Link>
-          {user ? (
-            <>
-              <Link to="/account" className="hover:text-neutral-50">
-                Account
-              </Link>
+        <nav className="mx-auto flex justify-between max-w-6xl flex-wrap items-center gap-4 px-4 py-3 text-sm">
+          <div className="flex gap-4">
+            <Link to="/" className="font-semibold text-amber-400">
+              Shems Store
+            </Link>
+            <Link to="/cart" className="hover:text-neutral-50">
+              Cart{count > 0 ? ` (${count})` : ""}
+            </Link>
+            {user ? (
               <Link to="/orders" className="hover:text-neutral-50">
                 Orders
               </Link>
-              {user.role === "admin" && (
-                <Link to="/admin" className="hover:text-neutral-50">
-                  Admin
+            ) : <></>}
+          </div>
+          {user ? (
+            <>
+              <div className="flex flex-row gap-4">
+                <Link to="/orders" className="hover:text-neutral-50">
+                  Orders
                 </Link>
-              )}
-              <button
-                type="button"
-                onClick={() => logout()}
-                className="ml-auto text-amber-400/90 hover:text-amber-300"
-              >
-                Sign out
-              </button>
+                
+                <Link to="/account" className="hover:text-neutral-50">
+                  Account
+                </Link>
+                {user.role === "admin" && (
+                  <Link to="/admin" className="hover:text-neutral-50">
+                    Admin
+                  </Link>
+                )}
+                  <button
+                  type="button"
+                  onClick={() => logout()}
+                  className="text-amber-400/90 hover:text-amber-300"
+                >
+                  Sign out
+                </button>
+              </div>
             </>
           ) : (
             <>

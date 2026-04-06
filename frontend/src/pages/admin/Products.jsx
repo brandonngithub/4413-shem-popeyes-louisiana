@@ -12,6 +12,7 @@ export default function Products() {
     price: "",
     stock: "",
     image: "",
+    category: "",
   })
   const [error, setError] = useState("")
 
@@ -23,7 +24,20 @@ export default function Products() {
       price: product.price.toString(),
       stock: product.quantity.toString(),
       image: product.image,
+      category: product.category,
     })
+  }
+
+  const handleDeleteProduct = async () => {
+    if(!editingProduct) return
+    try {
+      const base = products.find((p) => p.id === editingProduct)
+      if (!base) return
+      await api.delete(`/products/${editingProduct}`)
+      await refreshProducts()
+    } catch (e) {
+      setError(errMsg(e, "Failed to delete product."))
+    }
   }
 
   const handleSaveProduct = async () => {
@@ -38,11 +52,10 @@ export default function Products() {
         price: parseFloat(editForm.price),
         stock: parseInt(editForm.stock, 10),
         image: editForm.image,
-        category: base.category,
+        category: editForm.category,
         brand: base.brand,
         model: base.model,
       }
-
       await api.put(`/products/${editingProduct}`, updatedData)
 
       await refreshProducts()
@@ -53,6 +66,7 @@ export default function Products() {
         price: "",
         stock: "",
         image: "",
+        category: editForm.category,
       })
     } catch (e) {
       setError(errMsg(e, "Failed to update product."))
@@ -67,6 +81,7 @@ export default function Products() {
       price: "",
       stock: "",
       image: "",
+      category: "",
     })
   }
 
@@ -153,6 +168,24 @@ export default function Products() {
                           className="w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
                         />
                       </div>
+                      <div className="space-y-2">
+                        <label className="text-sm text-neutral-300">
+                          Category
+                        </label>
+                        <select
+                          value={editForm.category}
+                          onChange={(event) => handleInputChange("category", event.target.value)}
+                          className="w-full rounded-2xl border border-neutral-700 bg-neutral-950 px-4 py-3 text-neutral-100"
+                        >
+                          <option value="electronic">Electronic</option>
+                          <option value="accessory">Accessory</option>
+                          <option value="book">Book</option>
+                          <option value="other">Other</option>
+                          <option value="food">Food</option>
+                          <option value="beverage">Beverage</option>
+                          <option value="clothing">Clothing</option>
+                        </select>
+                      </div>
                       <div className="space-y-2 md:col-span-2">
                         <label className="text-sm text-neutral-300">
                           Description
@@ -167,19 +200,27 @@ export default function Products() {
                         />
                       </div>
                     </div>
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-between">
                       <button
-                        onClick={handleSaveProduct}
-                        className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-500"
+                        onClick={handleDeleteProduct}
+                        className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
                       >
-                        Save Changes
+                        Delete Product
                       </button>
-                      <button
-                        onClick={handleCancelEdit}
-                        className="rounded-lg bg-neutral-600 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-500"
-                      >
-                        Cancel
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleSaveProduct}
+                          className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-500"
+                        >
+                          Save Changes
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          className="rounded-lg bg-neutral-600 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-500"
+                        >
+                          Cancel
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ) : (
