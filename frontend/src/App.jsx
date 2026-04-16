@@ -58,49 +58,49 @@ function Layout() {
         </div>
       )}
       <header className="border-b border-neutral-800 bg-neutral-900/80">
-        <nav className="mx-auto flex justify-between max-w-6xl flex-wrap items-center gap-4 px-4 py-3 text-sm">
-          <div className="flex gap-4">
-            <Link to="/" className="font-semibold text-amber-400">
-              Shem Store
-            </Link>
-            <Link to="/cart" className="hover:text-neutral-50">
-              Cart{count > 0 ? ` (${count})` : ""}
-            </Link>
-          </div>
-          {user ? (
+        <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-3 text-sm">
+          <span className="font-semibold text-amber-400">Shem Store</span>
+          <Link to="/" className="hover:text-neutral-50">
+            Home
+          </Link>
+          <Link to="/cart" className="hover:text-neutral-50">
+            Cart{count > 0 ? ` (${count})` : ""}
+          </Link>
+          {user && (
             <>
-              <div className="flex flex-row gap-4">
-                <Link to="/orders" className="hover:text-neutral-50">
-                  Orders
-                </Link>
-                
-                <Link to="/account" className="hover:text-neutral-50">
-                  Account
-                </Link>
-                {user.role === "admin" && (
-                  <Link to="/admin" className="hover:text-neutral-50">
-                    Admin
-                  </Link>
-                )}
-                  <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="text-amber-400/90 hover:text-amber-300"
-                >
-                  Sign out
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="ml-auto hover:text-neutral-50">
-                Sign in
+              <Link to="/orders" className="hover:text-neutral-50">
+                Orders
               </Link>
-              <Link to="/register" className="hover:text-neutral-50">
-                Register
+              <Link to="/account" className="hover:text-neutral-50">
+                Account
               </Link>
+              {user.role === "admin" && (
+                <Link to="/admin" className="hover:text-neutral-50">
+                  Admin
+                </Link>
+              )}
             </>
           )}
+          <div className="ml-auto flex items-center gap-4">
+            {user ? (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="text-amber-400/90 hover:text-amber-300"
+              >
+                Sign out
+              </button>
+            ) : (
+              <>
+                <Link to="/login" className="hover:text-neutral-50">
+                  Sign in
+                </Link>
+                <Link to="/register" className="hover:text-neutral-50">
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
         </nav>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-8">
