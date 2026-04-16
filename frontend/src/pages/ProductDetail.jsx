@@ -36,7 +36,22 @@ export default function ProductDetail() {
           <dt className="text-neutral-500">Price</dt>
           <dd className="text-amber-400">${p.price}</dd>
           <dt className="text-neutral-500">In stock</dt>
-          <dd className="text-neutral-200">{p.quantity}</dd>
+          <dd
+            className={
+              p.quantity === 0
+                ? "text-neutral-400"
+                : p.quantity < 5
+                ? "text-red-400"
+                : "text-neutral-200"
+            }
+          >
+            {p.quantity}
+            {p.quantity === 0
+              ? " · Sold out"
+              : p.quantity < 5
+              ? " · Almost gone!"
+              : ""}
+          </dd>
         </dl>
         <label className="flex items-center gap-2 text-m text-neutral-400">
           Qty

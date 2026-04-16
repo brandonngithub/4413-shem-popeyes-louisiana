@@ -109,11 +109,22 @@ export default function Shop() {
             className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/60"
           >
             <Link to={`/product/${p.id}`} className="block">
-              <img
-                src={p.image}
-                alt=""
-                className="aspect-square w-full object-cover"
-              />
+              <div className="relative">
+                <img
+                  src={p.image}
+                  alt=""
+                  className="aspect-square w-full object-cover"
+                />
+                {p.quantity === 0 ? (
+                  <span className="absolute top-2 left-2 rounded-full bg-neutral-800/90 px-2 py-0.5 text-xs font-medium text-neutral-300">
+                    Sold Out
+                  </span>
+                ) : p.quantity < 5 ? (
+                  <span className="absolute top-2 left-2 rounded-full bg-red-500/90 px-2 py-0.5 text-xs font-medium text-white">
+                    Almost Sold Out: {p.quantity} Left
+                  </span>
+                ) : null}
+              </div>
               <div className="space-y-1 p-4">
                 <p className="font-medium text-neutral-100">{p.name}</p>
                 <p className="text-xs text-neutral-500">
