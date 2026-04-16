@@ -26,8 +26,8 @@ npm run dev
 
 ### Deployment
 
-- Frontend deployed on Vercel
-- Backend deployed on Render
+- Frontend deployed on Vercel (https://4413-shem-popeyes-louisiana.vercel.app/)
+- Backend deployed on Render (https://four413-shem-popeyes-louisiana.onrender.com/)
 - Database deployed on Supabase
 
 ### Admin Credentials
