@@ -36,7 +36,6 @@ class User(Base):
     shipping_province = Column(String, default="")
     shipping_country = Column(String, default="")
     shipping_zip = Column(String, default="")
-    card_last4 = Column(String, default="")
     created_at = Column(DateTime, default=datetime.utcnow)
 
     orders = relationship("Order", back_populates="user")
@@ -64,6 +63,8 @@ class Order(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     total_price = Column(Float)
     status = Column(Enum(OrderStatus), default=OrderStatus.PLACED)
+    payment_intent_id = Column(String, nullable=True)
+    payment_status = Column(String, nullable=True, default="pending")
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="orders")

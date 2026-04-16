@@ -148,7 +148,10 @@ export function StoreProvider({ children }) {
         }
       },
 
-      logout: () => setUser(null),
+      logout: () => {
+        setUser(null)
+        setCart([])
+      },
 
       register: async (f) => {
         try {
@@ -162,7 +165,6 @@ export function StoreProvider({ children }) {
             shipping_province: f.shippingProvince,
             shipping_country: f.shippingCountry,
             shipping_zip: f.shippingZip,
-            card_last4: f.cardLast4.slice(-4),
           })
           const session = mapUser(data)
           setUser(session)
@@ -186,7 +188,6 @@ export function StoreProvider({ children }) {
             shipping_province: patch.shippingProvince,
             shipping_country: patch.shippingCountry,
             shipping_zip: patch.shippingZip,
-            card_last4: patch.cardLast4,
           })
           const { data } = await api.get(`/users/${user.id}`)
           setUser(mapUser(data))
@@ -219,8 +220,11 @@ export function StoreProvider({ children }) {
       removeLine: (itemId) =>
         setCart((c) => c.filter((l) => l.itemId !== String(itemId))),
 
-      checkout: async ({ useProfile, shipping, cardLast4 }) => {
+      checkout: async ({ useProfile, shipping, paymentIntentId }) => {
         if (!user) return { ok: false, error: "Sign in to check out." }
+        if (!paymentIntentId) {
+          return { ok: false, error: "Missing payment. Please try again." }
+        }
         for (const line of cart) {
           const p = productById(line.itemId)
           if (!p) return { ok: false, error: "Unknown product in cart." }
@@ -235,6 +239,7 @@ export function StoreProvider({ children }) {
             user_id: user.id,
             total_price: 0,
             status: "placed",
+            payment_intent_id: paymentIntentId,
             items: cart.map((l) => ({
               product_id: Number(l.itemId),
               quantity: l.qty,
@@ -242,13 +247,12 @@ export function StoreProvider({ children }) {
             })),
           })
           setCart([])
-          if (!useProfile) {
+          if (!useProfile && shipping) {
             await api.patch(`/users/${user.id}`, {
               shipping_street: shipping.street,
               shipping_province: shipping.province,
               shipping_country: shipping.country,
               shipping_zip: shipping.zip,
-              card_last4: cardLast4.slice(-4),
             })
             const { data } = await api.get(`/users/${user.id}`)
             setUser(mapUser(data))
@@ -295,7 +299,6 @@ export function StoreProvider({ children }) {
           shipping_province: patch.shippingProvince,
           shipping_country: patch.shippingCountry,
           shipping_zip: patch.shippingZip,
-          card_last4: patch.cardLast4,
         })
         const { data } = await api.get("/users/")
         setUsers(data.map(mapUser))

@@ -14,6 +14,7 @@ from app.dao.user_dao import UserDAO
 from app.database import Base, engine, get_db
 from app.seed import seed_if_empty
 from app.services.order_service import OrderService
+from app.services.payment_service import get_payment_provider
 
 
 def _cors_allow_origins() -> List[str]:
@@ -58,8 +59,6 @@ app.add_middleware(
 Base.metadata.create_all(bind=engine)
 seed_if_empty()
 
-_checkout_attempts: dict[int, int] = {}
-
 
 def _current_user(
     x_user_id: Optional[int] = Header(default=None, alias="X-User-Id"),
@@ -89,16 +88,34 @@ def _require_self_or_admin(actor: Optional[models.User], user_id: int) -> models
         raise HTTPException(status_code=403, detail="Forbidden")
     return actor
 
-def _payment_ok(user) -> bool:
-    global _checkout_attempts
-    if user not in _checkout_attempts:
-        _checkout_attempts[user] = 0
-    _checkout_attempts[user] += 1
-    return _checkout_attempts[user] % 3 != 0
-
 @app.get("/")
 def read_root():
     return {"message": "Healthy"}
+
+
+@app.get("/payments/config", response_model=schemas.PaymentConfig)
+def payment_config():
+    if not settings.STRIPE_PUBLISHABLE_KEY:
+        raise HTTPException(
+            status_code=503, detail="Payments are not configured on the server."
+        )
+    return schemas.PaymentConfig(
+        publishable_key=settings.STRIPE_PUBLISHABLE_KEY,
+        currency=settings.STRIPE_CURRENCY,
+    )
+
+
+@app.post("/payments/create-intent", response_model=schemas.PaymentIntentResponse)
+def create_payment_intent(
+    body: schemas.PaymentIntentRequest,
+    db: Session = Depends(get_db),
+    actor: Optional[models.User] = Depends(_current_user),
+):
+    actor = _require_login(actor)
+    service = OrderService(UserDAO(db), ProductDAO(db), OrderDAO(db))
+    lines, _total = service.quote_total(body.items)
+    result = get_payment_provider().create_intent(user_id=actor.id, lines=lines)
+    return schemas.PaymentIntentResponse(**result)
 
 @app.post("/auth/login", response_model=schemas.User)
 def login(body: schemas.LoginRequest, db: Session = Depends(get_db)):
@@ -251,7 +268,7 @@ def create_order(
 ):
     _require_self_or_admin(actor, order.user_id)
     service = OrderService(UserDAO(db), ProductDAO(db), OrderDAO(db))
-    return service.create_order(order, _payment_ok)
+    return service.create_order(order, get_payment_provider())
 
 
 @app.get("/orders/", response_model=List[schemas.Order])

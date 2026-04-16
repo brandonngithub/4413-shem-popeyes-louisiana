@@ -27,14 +27,13 @@ function Field({ label, value, onChange, placeholder, readOnly = false, maxLengt
 }
 
 export default function Account() {
-  const { user, logout, updateProfile } = useStore();
+  const { user, updateProfile } = useStore();
   const [firstName, setFirstName] = useState(user?.firstName ?? "");
   const [lastName, setLastName] = useState(user?.lastName ?? "");
   const [shippingStreet, setShippingStreet] = useState(user?.shippingStreet ?? "");
   const [shippingProvince, setShippingProvince] = useState(user?.shippingProvince ?? "");
   const [shippingCountry, setShippingCountry] = useState(user?.shippingCountry ?? "");
   const [shippingZip, setShippingZip] = useState(user?.shippingZip ?? "");
-  const [cardLast4, setCardLast4] = useState(user?.cardLast4 ?? "");
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
@@ -44,7 +43,6 @@ export default function Account() {
     setShippingProvince(user?.shippingProvince ?? "");
     setShippingCountry(user?.shippingCountry ?? "");
     setShippingZip(user?.shippingZip ?? "");
-    setCardLast4(user?.cardLast4 ?? "");
   }, [
     user?.id,
     user?.firstName,
@@ -53,7 +51,6 @@ export default function Account() {
     user?.shippingProvince,
     user?.shippingCountry,
     user?.shippingZip,
-    user?.cardLast4,
   ]);
 
   if (!user) return <Navigate to="/login" replace />
@@ -67,7 +64,6 @@ export default function Account() {
       shippingProvince,
       shippingCountry,
       shippingZip,
-      cardLast4,
     });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -131,21 +127,6 @@ export default function Account() {
               placeholder="Postal / ZIP"
             />
           </div>
-        </section>
-
-        <section className="space-y-3 rounded-xl border border-neutral-800 bg-neutral-900/40 p-4">
-          <p className="text-neutral-400">Payment</p>
-          <div className="grid gap-3 md:grid-cols-2">
-            <Field
-              label="Card Number"
-              value={`•••• •••• •••• ${user.cardLast4 || "----"}`}
-              readOnly
-              placeholder="Card Number"
-            />
-          </div>
-          <p className="text-xs text-neutral-500">
-            Saved values update your checkout profile.
-          </p>
         </section>
 
         <div className="flex items-center gap-3">

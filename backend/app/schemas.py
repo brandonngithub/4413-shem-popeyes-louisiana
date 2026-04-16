@@ -16,7 +16,6 @@ class UserBase(BaseModel):
     shipping_province: Optional[str] = ""
     shipping_country: Optional[str] = ""
     shipping_zip: Optional[str] = ""
-    card_last4: Optional[str] = ""
 
 class UserCreate(UserBase):
     password: str
@@ -28,7 +27,6 @@ class UserPatch(BaseModel):
     shipping_province: Optional[str] = None
     shipping_country: Optional[str] = None
     shipping_zip: Optional[str] = None
-    card_last4: Optional[str] = None
 
 class User(UserBase):
     id: int
@@ -76,11 +74,30 @@ class OrderBase(BaseModel):
 
 class OrderCreate(OrderBase):
     items: List[OrderItemBase]
+    payment_intent_id: Optional[str] = None
 
 class Order(OrderBase):
     id: int
     created_at: datetime
     items: List[OrderItem]
+    payment_intent_id: Optional[str] = None
+    payment_status: Optional[str] = None
 
     class Config:
         from_attributes = True
+
+
+class PaymentConfig(BaseModel):
+    publishable_key: str
+    currency: str = "cad"
+
+
+class PaymentIntentRequest(BaseModel):
+    items: List[OrderItemBase]
+
+
+class PaymentIntentResponse(BaseModel):
+    client_secret: str
+    payment_intent_id: str
+    amount: int
+    currency: str

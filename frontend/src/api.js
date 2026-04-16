@@ -57,7 +57,6 @@ export function mapUser(u) {
     shippingProvince: u.shipping_province ?? "",
     shippingCountry: u.shipping_country ?? "",
     shippingZip: u.shipping_zip ?? "",
-    cardLast4: u.card_last4 ?? "",
   };
 }
 

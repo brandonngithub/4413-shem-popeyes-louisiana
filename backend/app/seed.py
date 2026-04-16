@@ -27,7 +27,6 @@ def seed_if_empty() -> None:
             shipping_province="ON",
             shipping_country="Canada",
             shipping_zip="K1E 6T5",
-            card_last4="4242",
         )
         admin = models.User(
             email="admin@demo.com",
@@ -39,7 +38,6 @@ def seed_if_empty() -> None:
             shipping_province="ON",
             shipping_country="Canada",
             shipping_zip="M5V 2T6",
-            card_last4="0000",
         )
         db.add_all([customer, admin])
         db.flush()

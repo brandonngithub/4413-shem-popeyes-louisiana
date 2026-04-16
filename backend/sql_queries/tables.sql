@@ -24,8 +24,6 @@ CREATE TABLE users (
     shipping_country VARCHAR(50),
     shipping_zip VARCHAR(20),
 
-    card_last4 VARCHAR(4),
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -47,6 +45,8 @@ CREATE TABLE orders (
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     total_price NUMERIC(10, 2) NOT NULL,
     status order_status DEFAULT 'PLACED',
+    payment_intent_id VARCHAR(255),
+    payment_status VARCHAR(20) DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

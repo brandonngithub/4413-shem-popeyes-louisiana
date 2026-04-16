@@ -70,8 +70,6 @@ export function Register() {
     shippingProvince: "",
     shippingCountry: "",
     shippingZip: "",
-    cardName: "",
-    cardLast4: "",
   });
   const [err, setErr] = useState("");
 
@@ -99,8 +97,6 @@ export function Register() {
         <input required className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100" placeholder="Province" value={f.shippingProvince} onChange={ch("shippingProvince")} />
         <input required className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100" placeholder="Country" value={f.shippingCountry} onChange={ch("shippingCountry")} />
         <input required className="sm:col-span-2 rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100" placeholder="Postal / ZIP" value={f.shippingZip} onChange={ch("shippingZip")} />
-        <input required className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100" placeholder="Name on card" value={f.cardName} onChange={ch("cardName")} />
-        <input required className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100" placeholder="Card last 4" maxLength={4} value={f.cardLast4} onChange={ch("cardLast4")} />
         {err && <p className="text-red-400 sm:col-span-2">{err}</p>}
         <button type="submit" className="sm:col-span-2 rounded-lg bg-amber-500 py-2 font-medium text-neutral-950 hover:bg-amber-400">
           Create account

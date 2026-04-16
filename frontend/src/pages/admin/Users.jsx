@@ -16,7 +16,6 @@ export default function Users() {
       shippingProvince: u.shippingProvince ?? "",
       shippingCountry: u.shippingCountry ?? "",
       shippingZip: u.shippingZip ?? "",
-      cardLast4: u.cardLast4 ?? "",
     }
 
   const updateDraft = (u, key, value) => {
@@ -31,7 +30,6 @@ export default function Users() {
           prev[id]?.shippingProvince ?? u.shippingProvince ?? "",
         shippingCountry: prev[id]?.shippingCountry ?? u.shippingCountry ?? "",
         shippingZip: prev[id]?.shippingZip ?? u.shippingZip ?? "",
-        cardLast4: prev[id]?.cardLast4 ?? u.cardLast4 ?? "",
         [key]: value,
       },
     }))
@@ -129,19 +127,6 @@ export default function Users() {
                         updateDraft(user, "shippingZip", e.target.value)
                       }
                       placeholder="Postal / ZIP"
-                      className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-neutral-100"
-                    />
-                    <input
-                      maxLength={4}
-                      value={draftFor(user).cardLast4}
-                      onChange={(e) =>
-                        updateDraft(
-                          user,
-                          "cardLast4",
-                          e.target.value.replace(/\D/g, "").slice(0, 4),
-                        )
-                      }
-                      placeholder="Card last 4"
                       className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-neutral-100"
                     />
                     <div className="sm:col-span-2 flex gap-2">

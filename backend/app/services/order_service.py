@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Optional
 
 from fastapi import HTTPException
 
@@ -6,6 +6,7 @@ from app import models, schemas
 from app.dao.order_dao import OrderDAO
 from app.dao.product_dao import ProductDAO
 from app.dao.user_dao import UserDAO
+from app.services.payment_service import LineItem, StripePaymentProvider
 
 
 class OrderService:
@@ -14,12 +15,10 @@ class OrderService:
         self.product_dao = product_dao
         self.order_dao = order_dao
 
-    def create_order(self, order: schemas.OrderCreate, payment_ok: Callable[[int], bool]):
-        user = self.user_dao.get(order.user_id)
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-
-        lines = []
+    def _price_cart(
+        self, order: schemas.OrderCreate
+    ) -> tuple[list[tuple[models.Product, int, float]], float]:
+        lines: list[tuple[models.Product, int, float]] = []
         total = 0.0
         for item in order.items:
             product = self.product_dao.get(item.product_id)
@@ -37,18 +36,56 @@ class OrderService:
             line_price = float(product.price)
             lines.append((product, item.quantity, line_price))
             total += line_price * item.quantity
+        return lines, total
 
-        if not payment_ok(order.user_id):
-            raise HTTPException(status_code=402, detail="Credit Card Authorization Failed.")
+    def create_order(
+        self,
+        order: schemas.OrderCreate,
+        payment_provider: StripePaymentProvider,
+    ):
+        user = self.user_dao.get(order.user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        lines, total = self._price_cart(order)
+
+        provider_lines = [
+            LineItem(product_id=p.id, quantity=q, unit_price=price)
+            for p, q, price in lines
+        ]
+        result = payment_provider.authorize(
+            user_id=order.user_id,
+            lines=provider_lines,
+            payment_intent_id=order.payment_intent_id,
+        )
+        if not result.approved:
+            raise HTTPException(
+                status_code=402,
+                detail=result.reason or "Credit Card Authorization Failed.",
+            )
 
         db_order = self.order_dao.create(
             user_id=order.user_id,
             status=order.status or models.OrderStatus.PLACED,
             total_price=total,
         )
+        db_order.payment_intent_id = result.payment_intent_id
+        db_order.payment_status = result.payment_status or "succeeded"
         for product, qty, line_price in lines:
             self.order_dao.add_item(db_order.id, product.id, qty, line_price)
             product.stock -= qty
 
         self.order_dao.commit()
         return self.order_dao.refresh(db_order)
+
+    def quote_total(self, items: list[schemas.OrderItemBase]) -> tuple[list[LineItem], float]:
+        """Price a cart without creating an order. Used for PaymentIntent creation."""
+        fake = schemas.OrderCreate(
+            user_id=0, total_price=0, status=models.OrderStatus.PLACED, items=items
+        )
+        lines, total = self._price_cart(fake)
+        provider_lines = [
+            LineItem(product_id=p.id, quantity=q, unit_price=price)
+            for p, q, price in lines
+        ]
+        return provider_lines, total
