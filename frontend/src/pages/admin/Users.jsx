@@ -12,10 +12,6 @@ export default function Users() {
     drafts[u.id] ?? {
       firstName: u.firstName ?? "",
       lastName: u.lastName ?? "",
-      shippingStreet: u.shippingStreet ?? "",
-      shippingProvince: u.shippingProvince ?? "",
-      shippingCountry: u.shippingCountry ?? "",
-      shippingZip: u.shippingZip ?? "",
     }
 
   const updateDraft = (u, key, value) => {
@@ -25,11 +21,6 @@ export default function Users() {
       [id]: {
         firstName: prev[id]?.firstName ?? u.firstName ?? "",
         lastName: prev[id]?.lastName ?? u.lastName ?? "",
-        shippingStreet: prev[id]?.shippingStreet ?? u.shippingStreet ?? "",
-        shippingProvince:
-          prev[id]?.shippingProvince ?? u.shippingProvince ?? "",
-        shippingCountry: prev[id]?.shippingCountry ?? u.shippingCountry ?? "",
-        shippingZip: prev[id]?.shippingZip ?? u.shippingZip ?? "",
         [key]: value,
       },
     }))
@@ -95,38 +86,6 @@ export default function Users() {
                         updateDraft(user, "lastName", e.target.value)
                       }
                       placeholder="Last name"
-                      className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-neutral-100"
-                    />
-                    <input
-                      value={draftFor(user).shippingStreet}
-                      onChange={(e) =>
-                        updateDraft(user, "shippingStreet", e.target.value)
-                      }
-                      placeholder="Street"
-                      className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-neutral-100 sm:col-span-2"
-                    />
-                    <input
-                      value={draftFor(user).shippingProvince}
-                      onChange={(e) =>
-                        updateDraft(user, "shippingProvince", e.target.value)
-                      }
-                      placeholder="Province"
-                      className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-neutral-100"
-                    />
-                    <input
-                      value={draftFor(user).shippingCountry}
-                      onChange={(e) =>
-                        updateDraft(user, "shippingCountry", e.target.value)
-                      }
-                      placeholder="Country"
-                      className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-neutral-100"
-                    />
-                    <input
-                      value={draftFor(user).shippingZip}
-                      onChange={(e) =>
-                        updateDraft(user, "shippingZip", e.target.value)
-                      }
-                      placeholder="Postal / ZIP"
                       className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-neutral-100"
                     />
                     <div className="sm:col-span-2 flex gap-2">

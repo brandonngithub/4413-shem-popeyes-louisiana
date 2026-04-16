@@ -137,6 +137,14 @@ export default function Orders() {
                     Delete Order
                   </button>
                 )}
+                {order.shipTo?.line1 && (
+                  <p className="mt-2 text-xs text-neutral-500">
+                    Ship to: {order.shipTo.name}, {order.shipTo.line1}
+                    {order.shipTo.line2 ? `, ${order.shipTo.line2}` : ""},{" "}
+                    {order.shipTo.city}, {order.shipTo.state}{" "}
+                    {order.shipTo.postalCode}, {order.shipTo.country}
+                  </p>
+                )}
                 <div className="mt-2 text-sm text-neutral-500">
                   {order.lines.map((line, i) => {
                     const p = products.find(

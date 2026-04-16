@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Link, Navigate } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 import { useStore } from "../store.jsx"
 
 function Field({ label, value, onChange, placeholder, readOnly = false, maxLength, type = "text" }) {
@@ -30,41 +30,18 @@ export default function Account() {
   const { user, updateProfile } = useStore();
   const [firstName, setFirstName] = useState(user?.firstName ?? "");
   const [lastName, setLastName] = useState(user?.lastName ?? "");
-  const [shippingStreet, setShippingStreet] = useState(user?.shippingStreet ?? "");
-  const [shippingProvince, setShippingProvince] = useState(user?.shippingProvince ?? "");
-  const [shippingCountry, setShippingCountry] = useState(user?.shippingCountry ?? "");
-  const [shippingZip, setShippingZip] = useState(user?.shippingZip ?? "");
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     setFirstName(user?.firstName ?? "");
     setLastName(user?.lastName ?? "");
-    setShippingStreet(user?.shippingStreet ?? "");
-    setShippingProvince(user?.shippingProvince ?? "");
-    setShippingCountry(user?.shippingCountry ?? "");
-    setShippingZip(user?.shippingZip ?? "");
-  }, [
-    user?.id,
-    user?.firstName,
-    user?.lastName,
-    user?.shippingStreet,
-    user?.shippingProvince,
-    user?.shippingCountry,
-    user?.shippingZip,
-  ]);
+  }, [user?.id, user?.firstName, user?.lastName]);
 
   if (!user) return <Navigate to="/login" replace />
 
   const save = async (e) => {
     e.preventDefault()
-    await updateProfile({
-      firstName,
-      lastName,
-      shippingStreet,
-      shippingProvince,
-      shippingCountry,
-      shippingZip,
-    });
+    await updateProfile({ firstName, lastName });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -97,36 +74,9 @@ export default function Account() {
               placeholder="Email"
             />
           </div>
-        </section>
-
-        <section className="space-y-3 rounded-xl border border-neutral-800 bg-neutral-900/40 p-4">
-          <p className="text-neutral-400">Address</p>
-          <div className="grid gap-3 md:grid-cols-2">
-            <Field
-              label="Street"
-              value={shippingStreet}
-              onChange={(e) => setShippingStreet(e.target.value)}
-              placeholder="Street"
-            />
-            <Field
-              label="Province"
-              value={shippingProvince}
-              onChange={(e) => setShippingProvince(e.target.value)}
-              placeholder="Province"
-            />
-            <Field
-              label="Country"
-              value={shippingCountry}
-              onChange={(e) => setShippingCountry(e.target.value)}
-              placeholder="Country"
-            />
-            <Field
-              label="Postal / ZIP"
-              value={shippingZip}
-              onChange={(e) => setShippingZip(e.target.value)}
-              placeholder="Postal / ZIP"
-            />
-          </div>
+          <p className="text-xs text-neutral-500">
+            Shipping addresses are collected at checkout and stored per order.
+          </p>
         </section>
 
         <div className="flex items-center gap-3">

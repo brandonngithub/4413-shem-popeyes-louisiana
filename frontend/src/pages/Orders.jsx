@@ -18,7 +18,7 @@ function statusHint(label) {
 }
 
 export default function Orders() {
-  const { user, orders, products, deleteOrder } = useStore()
+  const { user, orders, products } = useStore()
   const { state } = useLocation()
   const [showPopup, setShowPopup] = useState(Boolean(state?.orderSuccess))
 
@@ -95,13 +95,13 @@ export default function Orders() {
                   ))}
                 </ul>
 
-                {o.status === "placed" && (
-                  <button
-                    onClick={() => deleteOrder(o.id)}
-                    className="mt-1 text-sm text-red-400 underline hover:text-red-300"
-                  >
-                    Delete Order
-                  </button>
+                {o.shipTo?.line1 && (
+                  <p className="mt-2 text-xs text-neutral-500">
+                    Ship to: {o.shipTo.name}, {o.shipTo.line1}
+                    {o.shipTo.line2 ? `, ${o.shipTo.line2}` : ""},{" "}
+                    {o.shipTo.city}, {o.shipTo.state} {o.shipTo.postalCode},{" "}
+                    {o.shipTo.country}
+                  </p>
                 )}
               </li>
             )

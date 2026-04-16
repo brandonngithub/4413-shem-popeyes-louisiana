@@ -53,10 +53,6 @@ export function mapUser(u) {
     firstName: u.first_name,
     lastName: u.last_name,
     role,
-    shippingStreet: u.shipping_street ?? "",
-    shippingProvince: u.shipping_province ?? "",
-    shippingCountry: u.shipping_country ?? "",
-    shippingZip: u.shipping_zip ?? "",
   };
 }
 
@@ -100,6 +96,15 @@ export function mapOrder(o) {
     status,
     total_price: o.total_price,
     total: o.total_price,
+    shipTo: {
+      name: o.ship_to_name ?? "",
+      line1: o.ship_to_line1 ?? "",
+      line2: o.ship_to_line2 ?? "",
+      city: o.ship_to_city ?? "",
+      state: o.ship_to_state ?? "",
+      postalCode: o.ship_to_postal_code ?? "",
+      country: o.ship_to_country ?? "",
+    },
     lines: (o.items ?? []).map((i) => ({
       itemId: String(i.product_id),
       name: "",

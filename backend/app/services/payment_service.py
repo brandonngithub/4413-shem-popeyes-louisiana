@@ -8,8 +8,8 @@ replaying another user's intent.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import List, Optional
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional
 
 from fastapi import HTTPException
 
@@ -31,6 +31,7 @@ class PaymentResult:
     payment_intent_id: Optional[str] = None
     payment_status: Optional[str] = None
     reason: Optional[str] = None
+    shipping: Dict[str, str] = field(default_factory=dict)
 
 
 def _total_cents(lines: List[LineItem]) -> int:
@@ -107,6 +108,7 @@ class StripePaymentProvider:
                 approved=True,
                 payment_intent_id=payment_intent_id,
                 payment_status="succeeded",
+                shipping=_extract_shipping(intent),
             )
         return PaymentResult(
             approved=False,
@@ -114,6 +116,31 @@ class StripePaymentProvider:
             payment_status=intent.status,
             reason="Credit Card Authorization Failed.",
         )
+
+
+def _extract_shipping(intent) -> Dict[str, str]:
+    """Normalize Stripe's PaymentIntent.shipping into our ship_to_* fields."""
+    shipping = getattr(intent, "shipping", None)
+    if not shipping:
+        return {}
+    addr = getattr(shipping, "address", None) or {}
+
+    def g(obj, key: str) -> str:
+        if obj is None:
+            return ""
+        if isinstance(obj, dict):
+            return obj.get(key) or ""
+        return getattr(obj, key, "") or ""
+
+    return {
+        "name": g(shipping, "name"),
+        "line1": g(addr, "line1"),
+        "line2": g(addr, "line2"),
+        "city": g(addr, "city"),
+        "state": g(addr, "state"),
+        "postal_code": g(addr, "postal_code"),
+        "country": g(addr, "country"),
+    }
 
 
 _provider: Optional[StripePaymentProvider] = None

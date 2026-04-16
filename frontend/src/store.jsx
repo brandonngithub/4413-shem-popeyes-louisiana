@@ -161,10 +161,6 @@ export function StoreProvider({ children }) {
             first_name: f.firstName,
             last_name: f.lastName,
             role: "customer",
-            shipping_street: f.shippingStreet,
-            shipping_province: f.shippingProvince,
-            shipping_country: f.shippingCountry,
-            shipping_zip: f.shippingZip,
           })
           const session = mapUser(data)
           setUser(session)
@@ -184,10 +180,6 @@ export function StoreProvider({ children }) {
           await api.patch(`/users/${user.id}`, {
             first_name: patch.firstName,
             last_name: patch.lastName,
-            shipping_street: patch.shippingStreet,
-            shipping_province: patch.shippingProvince,
-            shipping_country: patch.shippingCountry,
-            shipping_zip: patch.shippingZip,
           })
           const { data } = await api.get(`/users/${user.id}`)
           setUser(mapUser(data))
@@ -220,7 +212,7 @@ export function StoreProvider({ children }) {
       removeLine: (itemId) =>
         setCart((c) => c.filter((l) => l.itemId !== String(itemId))),
 
-      checkout: async ({ useProfile, shipping, paymentIntentId }) => {
+      checkout: async ({ paymentIntentId }) => {
         if (!user) return { ok: false, error: "Sign in to check out." }
         if (!paymentIntentId) {
           return { ok: false, error: "Missing payment. Please try again." }
@@ -247,16 +239,6 @@ export function StoreProvider({ children }) {
             })),
           })
           setCart([])
-          if (!useProfile && shipping) {
-            await api.patch(`/users/${user.id}`, {
-              shipping_street: shipping.street,
-              shipping_province: shipping.province,
-              shipping_country: shipping.country,
-              shipping_zip: shipping.zip,
-            })
-            const { data } = await api.get(`/users/${user.id}`)
-            setUser(mapUser(data))
-          }
           const { data: plist } = await api.get("/products/")
           setProducts(plist.map(mapProduct))
           await refreshOrders(user)
@@ -295,10 +277,6 @@ export function StoreProvider({ children }) {
         await api.patch(`/users/${id}`, {
           first_name: patch.firstName,
           last_name: patch.lastName,
-          shipping_street: patch.shippingStreet,
-          shipping_province: patch.shippingProvince,
-          shipping_country: patch.shippingCountry,
-          shipping_zip: patch.shippingZip,
         })
         const { data } = await api.get("/users/")
         setUsers(data.map(mapUser))

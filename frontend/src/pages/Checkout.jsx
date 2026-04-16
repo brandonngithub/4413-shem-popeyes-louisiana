@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import {
+  AddressElement,
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { api, errMsg } from "../api.js";
 import { useStore } from "../store.jsx";
@@ -14,66 +20,10 @@ function getStripePromise(publishableKey) {
   return stripePromiseCache.get(publishableKey);
 }
 
-function ShippingFields({ useProfile, setUseProfile, shipping, setShipping }) {
-  const upd = (k) => (e) => setShipping({ ...shipping, [k]: e.target.value });
-  return (
-    <>
-      <label className="flex items-center gap-2 text-neutral-300">
-        <input
-          type="checkbox"
-          checked={useProfile}
-          onChange={(e) => setUseProfile(e.target.checked)}
-        />
-        Use saved profile address
-      </label>
-      {!useProfile && (
-        <div className="space-y-3 rounded-lg border border-neutral-800 p-4">
-          <p className="text-neutral-500">Shipping</p>
-          <input
-            required
-            value={shipping.street}
-            onChange={upd("street")}
-            placeholder="Street"
-            className="w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
-          />
-          <input
-            required
-            value={shipping.province}
-            onChange={upd("province")}
-            placeholder="Province"
-            className="w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
-          />
-          <input
-            required
-            value={shipping.country}
-            onChange={upd("country")}
-            placeholder="Country"
-            className="w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
-          />
-          <input
-            required
-            value={shipping.zip}
-            onChange={upd("zip")}
-            placeholder="Postal / ZIP"
-            className="w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100"
-          />
-        </div>
-      )}
-    </>
-  );
-}
-
 function StripeCheckoutForm({ user, onOrderPlaced, onFailed }) {
   const stripe = useStripe();
   const elements = useElements();
   const { checkout } = useStore();
-  const [useProfile, setUseProfile] = useState(true);
-  const [shipping, setShipping] = useState({
-    street: user?.shippingStreet ?? "",
-    province: user?.shippingProvince ?? "",
-    country: user?.shippingCountry ?? "",
-    zip: user?.shippingZip ?? "",
-  });
   const [submitting, setSubmitting] = useState(false);
 
   const submit = async (e) => {
@@ -94,33 +44,37 @@ function StripeCheckoutForm({ user, onOrderPlaced, onFailed }) {
       onFailed("Credit Card Authorization Failed.");
       return;
     }
-    const r = await checkout({
-      useProfile,
-      shipping,
-      paymentIntentId: paymentIntent.id,
-    });
+    const r = await checkout({ paymentIntentId: paymentIntent.id });
     setSubmitting(false);
     if (r.ok) onOrderPlaced(r);
     else onFailed(r.error);
   };
 
+  const defaultName = [user?.firstName, user?.lastName].filter(Boolean).join(" ");
+
   return (
     <form onSubmit={submit} className="space-y-4 text-sm">
-      <ShippingFields
-        useProfile={useProfile}
-        setUseProfile={setUseProfile}
-        shipping={shipping}
-        setShipping={setShipping}
-      />
+      <div className="space-y-2 rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
+        <p className="text-neutral-400">Shipping address</p>
+        <div className="rounded-md bg-white p-3">
+          <AddressElement
+            options={{
+              mode: "shipping",
+              allowedCountries: ["CA", "US"],
+              defaultValues: { name: defaultName },
+              fields: { phone: "never" },
+            }}
+          />
+        </div>
+      </div>
+
       <div className="space-y-2 rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
         <p className="text-neutral-400">Card details</p>
         <div className="rounded-md bg-white p-3">
           <PaymentElement />
         </div>
-        <p className="text-xs text-neutral-500">
-          Test cards: 4242 4242 4242 4242 (success) · 4000 0000 0000 0002 (declined). Any future expiry, any CVC, any ZIP.
-        </p>
       </div>
+
       <button
         type="submit"
         disabled={!stripe || submitting}

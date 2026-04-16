@@ -24,6 +24,12 @@ npm install
 npm run dev
 ```
 
+### Payment
+- A Stripe test account is used for payments
+- Stripe test card number `4242 4242 4242 4242`
+- Stripe test card exp date `any future date`
+- Stripe test card 3 digits `any three digits`
+
 ### Deployment
 
 - Frontend deployed on Vercel (https://4413-shem-popeyes-louisiana.vercel.app/)
@@ -34,3 +40,7 @@ npm run dev
 
 - admin@demo.com
 - demo
+
+### Required Features
+
+### Extra Features

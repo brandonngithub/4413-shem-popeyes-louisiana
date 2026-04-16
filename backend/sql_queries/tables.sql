@@ -18,12 +18,6 @@ CREATE TABLE users (
     first_name VARCHAR(100),
     last_name VARCHAR(100),
     role user_role NOT NULL DEFAULT 'CUSTOMER',
-
-    shipping_street TEXT,
-    shipping_province VARCHAR(50),
-    shipping_country VARCHAR(50),
-    shipping_zip VARCHAR(20),
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -47,6 +41,15 @@ CREATE TABLE orders (
     status order_status DEFAULT 'PLACED',
     payment_intent_id VARCHAR(255),
     payment_status VARCHAR(20) DEFAULT 'pending',
+
+    ship_to_name VARCHAR(255) DEFAULT '',
+    ship_to_line1 TEXT DEFAULT '',
+    ship_to_line2 TEXT DEFAULT '',
+    ship_to_city VARCHAR(100) DEFAULT '',
+    ship_to_state VARCHAR(100) DEFAULT '',
+    ship_to_postal_code VARCHAR(20) DEFAULT '',
+    ship_to_country VARCHAR(2) DEFAULT '',
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

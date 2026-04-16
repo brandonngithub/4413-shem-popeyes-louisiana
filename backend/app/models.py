@@ -32,10 +32,6 @@ class User(Base):
     first_name = Column(String)
     last_name = Column(String)
     role = Column(Enum(UserRole), default=UserRole.CUSTOMER)
-    shipping_street = Column(String, default="")
-    shipping_province = Column(String, default="")
-    shipping_country = Column(String, default="")
-    shipping_zip = Column(String, default="")
     created_at = Column(DateTime, default=datetime.utcnow)
 
     orders = relationship("Order", back_populates="user")
@@ -65,6 +61,15 @@ class Order(Base):
     status = Column(Enum(OrderStatus), default=OrderStatus.PLACED)
     payment_intent_id = Column(String, nullable=True)
     payment_status = Column(String, nullable=True, default="pending")
+
+    ship_to_name = Column(String, default="")
+    ship_to_line1 = Column(String, default="")
+    ship_to_line2 = Column(String, default="")
+    ship_to_city = Column(String, default="")
+    ship_to_state = Column(String, default="")
+    ship_to_postal_code = Column(String, default="")
+    ship_to_country = Column(String, default="")
+
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="orders")

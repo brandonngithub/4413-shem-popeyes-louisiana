@@ -23,10 +23,6 @@ def seed_if_empty() -> None:
             first_name="Alex",
             last_name="Buyer",
             role=models.UserRole.CUSTOMER,
-            shipping_street="567 Yonge St",
-            shipping_province="ON",
-            shipping_country="Canada",
-            shipping_zip="K1E 6T5",
         )
         admin = models.User(
             email="admin@demo.com",
@@ -34,10 +30,6 @@ def seed_if_empty() -> None:
             first_name="Store",
             last_name="Admin",
             role=models.UserRole.ADMIN,
-            shipping_street="1 Main St",
-            shipping_province="ON",
-            shipping_country="Canada",
-            shipping_zip="M5V 2T6",
         )
         db.add_all([customer, admin])
         db.flush()
@@ -79,6 +71,12 @@ def seed_if_empty() -> None:
             user_id=customer.id,
             total_price=20,
             status=models.OrderStatus.PLACED,
+            ship_to_name="Alex Buyer",
+            ship_to_line1="567 Yonge St",
+            ship_to_city="Toronto",
+            ship_to_state="ON",
+            ship_to_postal_code="K1E 6T5",
+            ship_to_country="CA",
         )
         db.add(order)
         db.flush()

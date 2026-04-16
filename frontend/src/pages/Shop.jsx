@@ -113,7 +113,12 @@ export default function Shop() {
                 <img
                   src={p.image}
                   alt=""
-                  className="aspect-square w-full object-cover"
+                  className={
+                    "aspect-square w-full object-cover transition" +
+                    (p.quantity === 0
+                      ? " blur-sm grayscale opacity-60"
+                      : "")
+                  }
                 />
                 {p.quantity === 0 ? (
                   <span className="absolute top-2 left-2 rounded-full bg-neutral-800/90 px-2 py-0.5 text-xs font-medium text-neutral-300">

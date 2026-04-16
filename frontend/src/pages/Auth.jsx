@@ -66,10 +66,6 @@ export function Register() {
     password: "",
     firstName: "",
     lastName: "",
-    shippingStreet: "",
-    shippingProvince: "",
-    shippingCountry: "",
-    shippingZip: "",
   });
   const [err, setErr] = useState("");
 
@@ -93,10 +89,9 @@ export function Register() {
         <input required className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100 sm:col-span-2" placeholder="Password" type="password" value={f.password} onChange={ch("password")} />
         <input required className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100" placeholder="First name" value={f.firstName} onChange={ch("firstName")} />
         <input required className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100" placeholder="Last name" value={f.lastName} onChange={ch("lastName")} />
-        <input required className="sm:col-span-2 rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100" placeholder="Street" value={f.shippingStreet} onChange={ch("shippingStreet")} />
-        <input required className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100" placeholder="Province" value={f.shippingProvince} onChange={ch("shippingProvince")} />
-        <input required className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100" placeholder="Country" value={f.shippingCountry} onChange={ch("shippingCountry")} />
-        <input required className="sm:col-span-2 rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100" placeholder="Postal / ZIP" value={f.shippingZip} onChange={ch("shippingZip")} />
+        <p className="sm:col-span-2 text-xs text-neutral-500">
+          You&apos;ll enter your shipping address at checkout.
+        </p>
         {err && <p className="text-red-400 sm:col-span-2">{err}</p>}
         <button type="submit" className="sm:col-span-2 rounded-lg bg-amber-500 py-2 font-medium text-neutral-950 hover:bg-amber-400">
           Create account

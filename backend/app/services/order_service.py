@@ -71,6 +71,21 @@ class OrderService:
         )
         db_order.payment_intent_id = result.payment_intent_id
         db_order.payment_status = result.payment_status or "succeeded"
+
+        ship = result.shipping or {}
+        if not ship.get("line1"):
+            raise HTTPException(
+                status_code=400,
+                detail="Shipping address is required. Please fill in the address at checkout.",
+            )
+        db_order.ship_to_name = ship.get("name", "")
+        db_order.ship_to_line1 = ship.get("line1", "")
+        db_order.ship_to_line2 = ship.get("line2", "")
+        db_order.ship_to_city = ship.get("city", "")
+        db_order.ship_to_state = ship.get("state", "")
+        db_order.ship_to_postal_code = ship.get("postal_code", "")
+        db_order.ship_to_country = ship.get("country", "")
+
         for product, qty, line_price in lines:
             self.order_dao.add_item(db_order.id, product.id, qty, line_price)
             product.stock -= qty

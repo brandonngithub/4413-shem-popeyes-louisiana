@@ -12,10 +12,6 @@ class UserBase(BaseModel):
     first_name: str
     last_name: str
     role: Optional[UserRole] = UserRole.CUSTOMER
-    shipping_street: Optional[str] = ""
-    shipping_province: Optional[str] = ""
-    shipping_country: Optional[str] = ""
-    shipping_zip: Optional[str] = ""
 
 class UserCreate(UserBase):
     password: str
@@ -23,10 +19,6 @@ class UserCreate(UserBase):
 class UserPatch(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
-    shipping_street: Optional[str] = None
-    shipping_province: Optional[str] = None
-    shipping_country: Optional[str] = None
-    shipping_zip: Optional[str] = None
 
 class User(UserBase):
     id: int
@@ -82,6 +74,13 @@ class Order(OrderBase):
     items: List[OrderItem]
     payment_intent_id: Optional[str] = None
     payment_status: Optional[str] = None
+    ship_to_name: Optional[str] = ""
+    ship_to_line1: Optional[str] = ""
+    ship_to_line2: Optional[str] = ""
+    ship_to_city: Optional[str] = ""
+    ship_to_state: Optional[str] = ""
+    ship_to_postal_code: Optional[str] = ""
+    ship_to_country: Optional[str] = ""
 
     class Config:
         from_attributes = True

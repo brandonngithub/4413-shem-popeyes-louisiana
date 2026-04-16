@@ -36,7 +36,10 @@ export default function ProductDetail() {
       <img
         src={p.image}
         alt=""
-        className="w-full max-w-md rounded-xl border border-neutral-800 object-cover"
+        className={
+          "w-full max-w-md rounded-xl border border-neutral-800 object-cover transition" +
+          (outOfStock ? " blur-sm grayscale opacity-60" : "")
+        }
       />
       <div className="space-y-4">
         <h1 className="text-2xl font-semibold text-neutral-100">{p.name}</h1>
@@ -123,7 +126,12 @@ export default function ProductDetail() {
                 <img
                   src={related.image}
                   alt=""
-                  className="mb-3 aspect-square w-full rounded-lg object-cover"
+                  className={
+                    "mb-3 aspect-square w-full rounded-lg object-cover transition" +
+                    (related.quantity === 0
+                      ? " blur-sm grayscale opacity-60"
+                      : "")
+                  }
                 />
                 <h3 className="font-medium text-neutral-100 group-hover:text-amber-400">
                   {related.name}
