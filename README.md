@@ -29,3 +29,8 @@ npm run dev
 - Frontend deployed on Vercel
 - Backend deployed on Render
 - Database deployed on Supabase
+
+### Admin Credentials
+
+- admin@demo.com
+- demo

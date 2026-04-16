@@ -31,7 +31,7 @@ function Layout() {
         <nav className="mx-auto flex justify-between max-w-6xl flex-wrap items-center gap-4 px-4 py-3 text-sm">
           <div className="flex gap-4">
             <Link to="/" className="font-semibold text-amber-400">
-              Shems Store
+              Shem Store
             </Link>
             <Link to="/cart" className="hover:text-neutral-50">
               Cart{count > 0 ? ` (${count})` : ""}
