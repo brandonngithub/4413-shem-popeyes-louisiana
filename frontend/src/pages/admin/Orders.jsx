@@ -3,16 +3,40 @@ import { Link } from "react-router-dom"
 import { useStore } from "../../store.jsx"
 
 export default function Orders() {
-  const { orders, products, updateOrderStatus, deleteOrder } = useStore()
+  const { orders, products, users, updateOrderStatus, deleteOrder } = useStore()
   const [userFilter, setUserFilter] = useState("")
   const [productFilter, setProductFilter] = useState("all")
   const [fromDate, setFromDate] = useState("")
   const [toDate, setToDate] = useState("")
 
+  const usersById = useMemo(() => {
+    const m = new Map()
+    for (const u of users) m.set(u.id, u)
+    return m
+  }, [users])
+
+  const describeUser = (u) => {
+    if (!u) return ""
+    const name = `${u.firstName ?? ""} ${u.lastName ?? ""}`.trim()
+    return name ? `${name} (${u.email ?? ""})` : u.email ?? ""
+  }
+
   const filtered = useMemo(() => {
+    const q = userFilter.trim().toLowerCase()
     return orders.filter((order) => {
-      if (userFilter.trim() && String(order.userId) !== userFilter.trim()) {
-        return false
+      if (q) {
+        const u = usersById.get(order.userId)
+        const haystack = [
+          String(order.userId),
+          u?.firstName,
+          u?.lastName,
+          u?.email,
+          u ? `${u.firstName ?? ""} ${u.lastName ?? ""}` : "",
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase()
+        if (!haystack.includes(q)) return false
       }
       if (productFilter !== "all") {
         const hasProduct = order.lines.some(
@@ -24,7 +48,7 @@ export default function Orders() {
       if (toDate && order.date > toDate) return false
       return true
     })
-  }, [orders, userFilter, productFilter, fromDate, toDate])
+  }, [orders, userFilter, productFilter, fromDate, toDate, usersById])
 
   return (
     <div className="space-y-6">
@@ -37,8 +61,8 @@ export default function Orders() {
       <div className="grid gap-2 rounded-2xl border border-neutral-800 bg-neutral-900 p-3 text-sm sm:grid-cols-4">
         <input
           value={userFilter}
-          onChange={(e) => setUserFilter(e.target.value.replace(/\D/g, ""))}
-          placeholder="Filter by user id"
+          onChange={(e) => setUserFilter(e.target.value)}
+          placeholder="Filter by customer name, email, or id"
           className="rounded border border-neutral-700 bg-neutral-950 px-2 py-1.5 text-neutral-100"
         />
         <select
@@ -80,6 +104,11 @@ export default function Orders() {
                   Order #{order.id}
                 </p>
                 <p className="text-sm text-neutral-400">
+                  Customer:{" "}
+                  {describeUser(usersById.get(order.userId)) ||
+                    `User #${order.userId}`}
+                </p>
+                <p className="text-xs text-neutral-500">
                   User ID: {order.userId}
                 </p>
                 <p className="text-sm text-neutral-400">

@@ -16,6 +16,21 @@ export default function ProductDetail() {
       </p>
     );
 
+  const outOfStock = p.quantity <= 0;
+  const clampQty = (n) => {
+    const v = Math.floor(Number(n));
+    if (!Number.isFinite(v) || v < 1) return 1;
+    if (v > p.quantity) return p.quantity;
+    return v;
+  };
+  const handleAddToCart = () => {
+    if (outOfStock) return;
+    const safeQty = clampQty(qty);
+    setQty(safeQty);
+    addToCart(p.id, safeQty);
+    nav("/cart");
+  };
+
   return (
     <div className="grid gap-8 md:grid-cols-2">
       <img
@@ -53,27 +68,35 @@ export default function ProductDetail() {
               : ""}
           </dd>
         </dl>
-        <label className="flex items-center gap-2 text-m text-neutral-400">
-          Qty
-          <input
-            type="number"
-            min={1}
-            max={p.quantity}
-            value={qty}
-            onChange={(e) => setQty(Number(e.target.value) || 1)}
-            className="w-20 rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-neutral-100"
-          />
-        </label>
+        {outOfStock ? (
+          <p
+            role="alert"
+            className="rounded-lg border border-red-900 bg-red-950/40 px-3 py-2 text-sm text-red-200"
+          >
+            This item is sold out and cannot be added to the cart.
+          </p>
+        ) : (
+          <label className="flex items-center gap-2 text-m text-neutral-400">
+            Qty
+            <input
+              type="number"
+              min={1}
+              max={p.quantity}
+              value={qty}
+              onChange={(e) => setQty(clampQty(e.target.value))}
+              onBlur={(e) => setQty(clampQty(e.target.value))}
+              className="w-20 rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-neutral-100"
+            />
+          </label>
+        )}
         <div className="flex flex-wrap flex-col gap-3">
           <button
             type="button"
-            onClick={() => {
-              addToCart(p.id, qty);
-              nav("/cart");
-            }}
-            className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-neutral-950 hover:bg-amber-400"
+            onClick={handleAddToCart}
+            disabled={outOfStock}
+            className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-neutral-950 hover:bg-amber-400 disabled:cursor-not-allowed disabled:bg-neutral-700 disabled:text-neutral-400 disabled:hover:bg-neutral-700"
           >
-            Add to cart
+            {outOfStock ? "Sold out" : "Add to cart"}
           </button>
           <button
             className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-neutral-950 hover:bg-amber-400"
