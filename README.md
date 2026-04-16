@@ -44,3 +44,5 @@ npm run dev
 ### Required Features
 
 ### Extra Features
+- Password hashing with bcrypt
+

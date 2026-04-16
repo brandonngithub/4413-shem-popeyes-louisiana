@@ -54,25 +54,21 @@ function StripeCheckoutForm({ user, onOrderPlaced, onFailed }) {
 
   return (
     <form onSubmit={submit} className="space-y-4 text-sm">
-      <div className="space-y-2 rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
+      <div className="space-y-3 rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
         <p className="text-neutral-400">Shipping address</p>
-        <div className="rounded-md bg-white p-3">
-          <AddressElement
-            options={{
-              mode: "shipping",
-              allowedCountries: ["CA", "US"],
-              defaultValues: { name: defaultName },
-              fields: { phone: "never" },
-            }}
-          />
-        </div>
+        <AddressElement
+          options={{
+            mode: "shipping",
+            allowedCountries: ["CA", "US"],
+            defaultValues: { name: defaultName },
+            fields: { phone: "never" },
+          }}
+        />
       </div>
 
-      <div className="space-y-2 rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
+      <div className="space-y-3 rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
         <p className="text-neutral-400">Card details</p>
-        <div className="rounded-md bg-white p-3">
-          <PaymentElement />
-        </div>
+        <PaymentElement />
       </div>
 
       <button
@@ -155,7 +151,49 @@ export default function Checkout() {
           stripe={stripePromise}
           options={{
             clientSecret,
-            appearance: { theme: "stripe" },
+            appearance: {
+              theme: "night",
+              variables: {
+                colorPrimary: "#f59e0b",
+                colorBackground: "#0a0a0a",
+                colorText: "#f5f5f5",
+                colorTextSecondary: "#a3a3a3",
+                colorTextPlaceholder: "#737373",
+                colorDanger: "#f87171",
+                colorIconTab: "#a3a3a3",
+                colorIconTabSelected: "#f59e0b",
+                borderRadius: "8px",
+                fontFamily:
+                  'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+                fontSizeBase: "14px",
+                spacingUnit: "4px",
+              },
+              rules: {
+                ".Input": {
+                  border: "1px solid #404040",
+                  backgroundColor: "#171717",
+                },
+                ".Input:focus": {
+                  border: "1px solid #f59e0b",
+                  boxShadow: "0 0 0 1px #f59e0b",
+                },
+                ".Label": {
+                  color: "#d4d4d4",
+                  fontWeight: "500",
+                },
+                ".Tab": {
+                  border: "1px solid #404040",
+                  backgroundColor: "#171717",
+                },
+                ".Tab:hover": {
+                  backgroundColor: "#262626",
+                },
+                ".Tab--selected": {
+                  borderColor: "#f59e0b",
+                  backgroundColor: "#1c1917",
+                },
+              },
+            },
           }}
         >
           <StripeCheckoutForm
