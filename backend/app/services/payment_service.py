@@ -94,7 +94,7 @@ class StripePaymentProvider:
                 payment_status="failed",
                 reason="Payment amount does not match cart total.",
             )
-        meta_user = (intent.metadata or {}).get("user_id")
+        meta_user = getattr(intent.metadata, "user_id", None)
         if meta_user is not None and str(meta_user) != str(user_id):
             return PaymentResult(
                 approved=False,
