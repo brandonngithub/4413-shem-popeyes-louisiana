@@ -6,7 +6,7 @@ Full-stack e-commerce web application built with React, FastAPI, and PostgreSQL.
 
 ## Getting Started
 
-### Backend
+### How to Run Backend Locally
 
 ```bash
 cd backend
@@ -16,7 +16,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-### Frontend
+### How to Run Frontend Locally
 
 ```bash
 cd frontend
@@ -36,13 +36,46 @@ npm run dev
 - Backend deployed on Render (https://four413-shem-popeyes-louisiana.onrender.com/)
 - Database deployed on Supabase
 
+### Customer Credentials
+
+- customer@demo.com
+- demo
+
 ### Admin Credentials
 
 - admin@demo.com
 - demo
 
+### SQL Scripts
+
+- In `/backend/sql_queries/tables.sql`
+
 ### Required Features
+- Customer Register, Sign in, Sign out
+- List catalogue with images
+- Filter by Category/Brand/Model
+- Search by keyword, sort by price (asc/desc)
+- Sort by name (A–Z)
+- Product details page showing inventory
+- Add/Edit/Remove from cart
+- Continue shopping with cart retained
+- Checkout with stock-limit rejection
+- Stock decrement on checkout
+- Login/Register at checkout if not logged in
+- Payment process
+- Profile page with purchase history
+- Update profile
+- Admin sales history with filters (customer / product / date)
+- Admin detailed orders view
+- Admin manage customer accounts / update info
+- Admin add new products
+- Admin inventory quantity changes
 
 ### Extra Features
 - Password hashing with bcrypt
-
+- Stripe for payments
+- "Almost gone" low-stock badge
+- Sold-out image blurred
+- Cloud deployment on Vercel, Render, and Supabase
+- Singleton pattern (Stripe is a singleton)
+- Password confirmation with live mismatch feedback
