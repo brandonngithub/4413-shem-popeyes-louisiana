@@ -22,7 +22,14 @@ export function Login() {
 
   return (
     <div className="mx-auto max-w-sm space-y-4">
-      <h1 className="text-2xl font-semibold text-neutral-100">Sign in</h1>
+      <div className="flex flex-col items-center gap-2">
+        <img
+          src="/shem.png"
+          alt="Shem"
+          className="h-24 w-24 rounded-full object-cover ring-2 ring-amber-500/60"
+        />
+        <h1 className="text-2xl font-semibold text-neutral-100">Sign in</h1>
+      </div>
       <form onSubmit={submit} className="space-y-3 text-sm">
         <input
           required
@@ -95,7 +102,14 @@ export function Register() {
 
   return (
     <div className="mx-auto max-w-md space-y-4">
-      <h1 className="text-2xl font-semibold text-neutral-100">Register</h1>
+      <div className="flex flex-col items-center gap-2">
+        <img
+          src="/shem.png"
+          alt="Shem"
+          className="h-24 w-24 rounded-full object-cover ring-2 ring-amber-500/60"
+        />
+        <h1 className="text-2xl font-semibold text-neutral-100">Register</h1>
+      </div>
       <form onSubmit={submit} className="grid gap-2 text-sm sm:grid-cols-2">
         <input required className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100 sm:col-span-2" placeholder="Email" type="email" value={f.email} onChange={ch("email")} />
         <input required className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-neutral-100 sm:col-span-2" placeholder="Password" type="password" value={f.password} onChange={ch("password")} />

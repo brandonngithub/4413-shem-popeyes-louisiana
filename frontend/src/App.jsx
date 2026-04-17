@@ -59,7 +59,14 @@ function Layout() {
       )}
       <header className="border-b border-neutral-800 bg-neutral-900/80">
         <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-3 text-sm">
-          <span className="font-semibold text-amber-400">Shem Store</span>
+          <span className="flex items-center gap-2 font-semibold text-amber-400">
+            <img
+              src="/shem.png"
+              alt="Shem"
+              className="h-7 w-7 rounded-full object-cover ring-1 ring-amber-500/40"
+            />
+            Shem Store
+          </span>
           <Link to="/" className="hover:text-neutral-50">
             Home
           </Link>
