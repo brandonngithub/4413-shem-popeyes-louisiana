@@ -1,4 +1,4 @@
-"""Demo rows when the DB is empty (replace with real data via admin/API later)."""
+"""Seed demo users, products, and one order when the database is empty."""
 
 import bcrypt
 

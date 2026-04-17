@@ -39,7 +39,6 @@ export default function Users() {
     setDeletingId(id)
     try {
       await adminDeleteUser(id)
-      // The store should automatically update the users list
     } catch (error) {
       alert("Failed to delete user: " + error.message)
     } finally {

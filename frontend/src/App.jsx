@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { IoPersonCircleOutline } from "react-icons/io5";
 import { Link, Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom"
 import { useStore } from "./store.jsx"
 import Account from "./pages/Account.jsx"

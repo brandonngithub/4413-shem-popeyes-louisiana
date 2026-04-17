@@ -82,7 +82,7 @@ class OrderItem(Base):
     order_id = Column(Integer, ForeignKey("orders.id"))
     product_id = Column(Integer, ForeignKey("products.id"))
     quantity = Column(Integer)
-    price_at_purchase = Column(Float)  # price at time of order
+    price_at_purchase = Column(Float)
 
     order = relationship("Order", back_populates="items")
     product = relationship("Product", back_populates="order_items")

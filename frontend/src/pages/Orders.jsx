@@ -1,20 +1,12 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { Link, Navigate, useLocation } from "react-router-dom"
 import { useStore } from "../store.jsx"
 
-function formatStatus(order) {
-  if (order.status === "cancelled") return "Cancelled"
-  if (order.status === "delivered") return "Delivered"
-  if (order.status === "shipped") return "Shipped"
-  if (order.status === "placed") return "Placed"
-}
-
-function statusHint(label) {
-  if (label === "Pending") return "payment/verification issues"
-  if (label === "Unshipped") return "awaiting dispatch"
-  if (label === "Shipped") return "on the way"
-  if (label === "Delivered") return "delivered"
-  return ""
+const STATUS_LABELS = {
+  placed: "Placed",
+  shipped: "Shipped",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
 }
 
 export default function Orders() {
@@ -58,7 +50,7 @@ export default function Orders() {
       ) : (
         <ul className="space-y-3">
           {mine.map((o) => {
-            const label = formatStatus(o)
+            const label = STATUS_LABELS[o.status] ?? o.status
             const firstItemId = o.lines[0]?.itemId
             const firstProduct = products.find(
               (p) => String(p.id) === String(firstItemId),
@@ -85,7 +77,6 @@ export default function Orders() {
                 </div>
                 <p className="mt-1 text-sm text-neutral-400">
                   Status: {label}
-                  {statusHint(label) ? ` (${statusHint(label)})` : ""}
                 </p>
                 <ul className="mt-2 text-sm text-neutral-500">
                   {o.lines.map((l, idx) => (

@@ -29,12 +29,11 @@ export default function Products() {
   }
 
   const handleDeleteProduct = async () => {
-    if(!editingProduct) return
+    if (!editingProduct) return
     try {
-      const base = products.find((p) => p.id === editingProduct)
-      if (!base) return
       await api.delete(`/products/${editingProduct}`)
       await refreshProducts()
+      setEditingProduct(null)
     } catch (e) {
       setError(errMsg(e, "Failed to delete product."))
     }
@@ -43,10 +42,10 @@ export default function Products() {
   const handleSaveProduct = async () => {
     if (!editingProduct) return
     setError("")
+    const base = products.find((p) => p.id === editingProduct)
+    if (!base) return
     try {
-      const base = products.find((p) => p.id === editingProduct)
-      if (!base) return
-      const updatedData = {
+      await api.put(`/products/${editingProduct}`, {
         name: editForm.name,
         description: editForm.description,
         price: parseFloat(editForm.price),
@@ -55,19 +54,9 @@ export default function Products() {
         category: editForm.category,
         brand: base.brand,
         model: base.model,
-      }
-      await api.put(`/products/${editingProduct}`, updatedData)
-
+      })
       await refreshProducts()
       setEditingProduct(null)
-      setEditForm({
-        name: "",
-        description: "",
-        price: "",
-        stock: "",
-        image: "",
-        category: editForm.category,
-      })
     } catch (e) {
       setError(errMsg(e, "Failed to update product."))
     }

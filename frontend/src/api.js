@@ -8,8 +8,8 @@ async function req(method, path, body) {
     if (user?.id != null) {
       headers["X-User-Id"] = String(user.id);
     }
-  } catch (e) {
-    console.log("Error occurred: " + e);
+  } catch {
+    /* ignore */
   }
   if (body != null) {
     headers["Content-Type"] = "application/json";

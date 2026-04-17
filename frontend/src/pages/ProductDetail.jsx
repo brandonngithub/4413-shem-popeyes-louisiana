@@ -79,7 +79,7 @@ export default function ProductDetail() {
             This item is sold out and cannot be added to the cart.
           </p>
         ) : (
-          <label className="flex items-center gap-2 text-m text-neutral-400">
+          <label className="flex items-center gap-2 text-sm text-neutral-400">
             Qty
             <input
               type="number"
@@ -101,14 +101,12 @@ export default function ProductDetail() {
           >
             {outOfStock ? "Sold out" : "Add to cart"}
           </button>
-          <button
-            className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-neutral-950 hover:bg-amber-400"
+          <Link
+            to="/"
+            className="rounded-lg bg-amber-500 px-4 py-2 text-center text-sm font-medium text-neutral-950 hover:bg-amber-400"
           >
-            <Link to="/" className="text-sm">
-              Continue shopping
-            </Link>
-          </button>
-          
+            Continue shopping
+          </Link>
         </div>
       </div>
       <div className="md:col-span-2">

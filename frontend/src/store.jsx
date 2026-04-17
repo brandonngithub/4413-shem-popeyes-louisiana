@@ -184,7 +184,7 @@ export function StoreProvider({ children }) {
           const { data } = await api.get(`/users/${user.id}`)
           setUser(mapUser(data))
         } catch {
-          /* ignore */
+          // keep the prior profile in state if the refresh fails
         }
       },
 

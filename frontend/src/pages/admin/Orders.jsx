@@ -108,9 +108,6 @@ export default function Orders() {
                   {describeUser(usersById.get(order.userId)) ||
                     `User #${order.userId}`}
                 </p>
-                <p className="text-xs text-neutral-500">
-                  User ID: {order.userId}
-                </p>
                 <p className="text-sm text-neutral-400">
                   Total: ${order.total_price?.toFixed(2) ?? "0.00"}
                 </p>
