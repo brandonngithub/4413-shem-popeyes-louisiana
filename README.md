@@ -4,6 +4,8 @@
 
 Full-stack e-commerce web application built with React, FastAPI, and PostgreSQL.
 
+By: Ricky Tran (218809269), Brandon Ngo (218777714), Luke Da Re-White (218590257)
+
 ## Getting Started
 
 ### How to Run Backend Locally
